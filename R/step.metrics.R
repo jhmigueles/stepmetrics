@@ -146,14 +146,14 @@ step.metrics = function(datadir, outputdir="./",
     if(exclude > 0) D = D[-which(D$dur_day_min < includedaycrit * 60),]
     if(exclude_pk30_0 == TRUE){
       zeroes = sum(D$CAD_nZeroes_pk30 > 0)
-      if(zeroes > 0) D = D[-which(D$CAD_N0s_pk30_spm > 0),]
+      if(zeroes > 0) D = D[-which(D$CAD_nZeroes_pk30 > 0),]
     }
     if(exclude_pk60_0 == TRUE){
       zeroes = sum(D$CAD_nZeroes_pk60 > 0)
-      if(zeroes > 0) D = D[-which(D$CAD_N0s_pk60_spm > 0),]
+      if(zeroes > 0) D = D[-which(D$CAD_nZeroes_pk60 > 0),]
     }
     fi=1                                                  #fi is the column of the new output data frame
-    output[i,fi] = D$ID[i]; fi=fi+1
+    output[i,fi] = D[1, 1]; fi=fi+1
     output[i,fi] = D[1,"date"]; fi=fi+1
     output[i,fi] = nrow(D); fi=fi+1
     output[i,fi] = sum(D$weekday_num < 6); fi=fi+1
@@ -168,13 +168,13 @@ step.metrics = function(datadir, outputdir="./",
       output[i,fi] = mean(D[,mi])
       # weighted
       fi = grep("_wei", columns, value = TRUE)
-      output[i,fi] = ((mean(D[which(D$wday_num < 6), mi]) * 5) + (mean(D[which(D$wday_num >= 6), mi]) * 2)) / 7
+      output[i,fi] = ((mean(D[which(D$weekday_num < 6), mi]) * 5) + (mean(D[which(D$weekday_num >= 6), mi]) * 2)) / 7
       # weekdays
       fi = grep("_WD", columns, value = TRUE)
-      output[i,fi] = mean(D[which(D$wday_num < 6), mi])
+      output[i,fi] = mean(D[which(D$weekday_num < 6), mi])
       # weekend days
       fi = grep("_WE", columns, value = TRUE)
-      output[i,fi] = mean(D[which(D$wday_num >= 6), mi])
+      output[i,fi] = mean(D[which(D$weekday_num >= 6), mi])
     }
   }
 
