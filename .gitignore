@@ -1,4 +1,13 @@
 .Rproj.user
 .Rhistory
-.RData
-.Ruserdata
+*.Rproj
+*.o
+*.so
+*.dll
+*.RData
+*.Rd2pdf*
+doc
+Meta
+inst/doc
+vignettes/*.html
+vignettes/*.R

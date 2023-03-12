@@ -31,7 +31,7 @@ step.metrics(
 
 \item{exclude_pk60_0}{Logical (default = TRUE)}
 
-\item{time_format}{Character (default = c())}
+\item{time_format}{Character (default = NULL)}
 }
 \value{
 This function does not return any object. It stores csv files with the
