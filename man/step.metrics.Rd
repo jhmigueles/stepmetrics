@@ -7,9 +7,11 @@
 step.metrics(
   datadir,
   outputdir = "./",
-  id_sep = "_",
-  threshold.MOD = 100,
-  threshold.VIG = 130,
+  idloc = "_",
+  cadence_bands = c(0, 1, 20, 40, 60, 80, 100, 120, Inf),
+  cadence_peaks = c(1, 30, 60),
+  cadence_MOD = 100,
+  cadence_VIG = 130,
   includedaycrit = 10,
   exclude_pk30_0 = TRUE,
   exclude_pk60_0 = TRUE,
@@ -21,9 +23,15 @@ step.metrics(
 
 \item{outputdir}{Character (no default). Directory where the output needs to be stored. Note that this function will attempt to create folders in this directory and uses those folder to keep output.}
 
-\item{threshold.MOD}{Numeric (default = 100)}
+\item{idloc}{Character (default = "_"). The ID is expected to be before the character(s) specified by \code{idloc} in the filename}
 
-\item{threshold.VIG}{Numeric (default = 130)}
+\item{cadence_bands}{Numeric (default = c(0, 1, 20, 40, 60, 80, 100, 120, Inf)). Cadence bands to calculate the time accumulated into.}
+
+\item{cadence_peaks}{Numeric (default = c(1, 30, 60)). Cadence peaks to calculate.}
+
+\item{cadence_MOD}{Numeric (default = 100)}
+
+\item{cadence_VIG}{Numeric (default = 130)}
 
 \item{includedaycrit}{Numeric (default = 10)}
 
