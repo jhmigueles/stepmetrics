@@ -48,6 +48,7 @@ step.metrics = function(datadir, outputdir="./",
 
   #Loop through the files
   for (i in 1:length(ids)) {
+    print(i)
     # read data ----
     files2read = grep(ids[i], files_fn, value = TRUE)
     data = readFile(files2read)
@@ -95,7 +96,7 @@ step.metrics = function(datadir, outputdir="./",
     }
 
     ##OUTPUT PER DAY
-    names.out = c("id", "date", "weekday", "weekday_num", "dur_day_min", "threshold_MOD_spm", "threshold_VIG_spm",
+    names.out = c("ID", "date", "weekday", "weekday_num", "dur_day_min", "threshold_MOD_spm", "threshold_VIG_spm",
                   "stepsperday", CAD_peaks[[1]]$names, CAD_bands[[1]]$names,
                   "MPA_min","VPA_min","MVPA_min")
 
@@ -115,8 +116,7 @@ step.metrics = function(datadir, outputdir="./",
     if(dir.exists(paste0(outputdir,"/daySummary"))==FALSE) {
       dir.create(paste0(outputdir,"/daySummary/"))
     }
-    write.csv(daily.out, file = paste0(outputdir,"/daySummary/",files[i],"_DaySum",".csv"), row.names = F)
-    print(i)
+    write.csv(daily.out, file = paste0(outputdir,"/daySummary/", id, "_DaySum",".csv"), row.names = F)
   }
 
   ################################################################################################################################
@@ -124,48 +124,58 @@ step.metrics = function(datadir, outputdir="./",
 
   print("Calculating means per week")
 
-  files = dir(paste0(outputdir,"/daySummary"))
+  files = dir(paste0(outputdir, "/daySummary"))
 
-  names.out.2 = c("id","start_date", "valid_days","valid_days_WD", "valid_days_WE",
-                  "th_MOD","th_VIG",
-                  "stepsperday_pla","stepsperday_wei",
-                  "CAD_pk60_spm_pla","CAD_pk60_spm_wei", "CAD_N0s_pk60_spm_pla", "CAD_N0s_pk60_spm_wei",
-                  "CAD_pk30_spm_pla","CAD_pk30_spm_wei", "CAD_N0s_pk30_spm_pla", "CAD_N0s_pk30_spm_wei",
-                  "CAD_pk1_spm_pla","CAD_pk1_spm_wei",
-                  "band_CAD_0_min_pla", "band_CAD_0_min_wei","band_CAD_1-19_min_pla","band_CAD_1-19_min_wei",
-                  "band_CAD_20-39_min_pla","band_CAD_20-39_min_wei","band_CAD_40-59_min_pla","band_CAD_40-59_min_wei",
-                  "band_CAD_60-79_min_pla","band_CAD_60-79_min_wei","band_CAD_80-99_min_pla","band_CAD_80-99_min_wei",
-                  "band_CAD_100-119_min_pla","band_CAD_100-119_min_wei","band_CAD_120+_min_pla","band_CAD_120+_min_wei",
-                  "MPA_min_pla","MPA_min_wei","VPA_min_pla","VPA_min_wei","MVPA_min_pla","MVPA_min_wei")
+  names.out.2 = c("ID","start_date", "valid_days","valid_days_WD", "valid_days_WE", "threshold_MOD_spm","threshold_VIG_spm",
+                  paste0(c("stepsperday", CAD_peaks[[1]]$names, CAD_bands[[1]]$names,
+                           "MPA_min", "VPA_min", "MVPA_min"), "_pla"),
+                  paste0(c("stepsperday", CAD_peaks[[1]]$names, CAD_bands[[1]]$names,
+                           "MPA_min", "VPA_min", "MVPA_min"), "_wei"),
+                  paste0(c("stepsperday", CAD_peaks[[1]]$names, CAD_bands[[1]]$names,
+                           "MPA_min", "VPA_min", "MVPA_min"), "_WD"),
+                  paste0(c("stepsperday", CAD_peaks[[1]]$names, CAD_bands[[1]]$names,
+                           "MPA_min", "VPA_min", "MVPA_min"), "_WE"))
 
   output = data.frame(matrix(NA, length(files), length(names.out.2)))
   colnames(output) = names.out.2
   #Loop through files to calculate mean variables
   for (i in 1:length(files)){
+    print(i)
     D = read.csv(paste0(outputdir,"/daySummary/", files[i]))
     exclude = sum(D$dur_day_min < includedaycrit * 60)
     if(exclude > 0) D = D[-which(D$dur_day_min < includedaycrit * 60),]
     if(exclude_pk30_0 == TRUE){
-      zeroes = sum(D$CAD_N0s_pk30_spm > 0)
+      zeroes = sum(D$CAD_nZeroes_pk30 > 0)
       if(zeroes > 0) D = D[-which(D$CAD_N0s_pk30_spm > 0),]
     }
     if(exclude_pk60_0 == TRUE){
-      zeroes = sum(D$CAD_N0s_pk60_spm > 0)
+      zeroes = sum(D$CAD_nZeroes_pk60 > 0)
       if(zeroes > 0) D = D[-which(D$CAD_N0s_pk60_spm > 0),]
     }
     fi=1                                                  #fi is the column of the new output data frame
-    output[i,fi] = files[i]; fi=fi+1
+    output[i,fi] = D$ID[i]; fi=fi+1
     output[i,fi] = D[1,"date"]; fi=fi+1
     output[i,fi] = nrow(D); fi=fi+1
-    output[i,fi] = sum(D$wday_num < 6); fi=fi+1
-    output[i,fi] = sum(D$wday_num >= 6); fi=fi+1
+    output[i,fi] = sum(D$weekday_num < 6); fi=fi+1
+    output[i,fi] = sum(D$weekday_num >= 6); fi=fi+1
     output[i,fi:(fi+1)] = c(cadence_MOD, cadence_VIG); fi=fi+2
 
-    for (mi in 7:ncol(daily.out)){
-      output[i,fi] = mean(D[,mi]); fi=fi+1
-      output[i,fi] = ((mean(D[which(D$wday_num < 6), mi]) * 5) + (mean(D[which(D$wday_num >= 6), mi]) * 2)) / 7; fi=fi+1
+    # averages
+    for (mi in 8:ncol(D)){
+      columns = grep(colnames(D)[mi], colnames(output), value = TRUE)
+      # plain
+      fi = grep("_pla", columns, value = TRUE)
+      output[i,fi] = mean(D[,mi])
+      # weighted
+      fi = grep("_wei", columns, value = TRUE)
+      output[i,fi] = ((mean(D[which(D$wday_num < 6), mi]) * 5) + (mean(D[which(D$wday_num >= 6), mi]) * 2)) / 7
+      # weekdays
+      fi = grep("_WD", columns, value = TRUE)
+      output[i,fi] = mean(D[which(D$wday_num < 6), mi])
+      # weekend days
+      fi = grep("_WE", columns, value = TRUE)
+      output[i,fi] = mean(D[which(D$wday_num >= 6), mi])
     }
-    print(i)
   }
 
   write.csv(output, file = paste0(outputdir,"/personSummary.csv"), row.names = FALSE)
