@@ -72,9 +72,6 @@ readFile = function(path, time_format = c()) {
       data = rbind(data, data_i)
     }
   }
-  if (exists("test")) rm(test)
-  if (exists("data_i")) rm(data_i)
-  gc()
 
   # set up object to return ----
   cleanData = data.frame(timestamp = rep(NA, nrow(data)),
