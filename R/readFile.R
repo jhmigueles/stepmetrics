@@ -125,6 +125,7 @@ readFile = function(path, time_format = c()) {
   timestamp_tmp = grep("date|time", colnames(data), value = TRUE)
   if (length(timestamp_tmp) == 1) {
     ts = data[, timestamp_tmp]
+    print(head(ts))
   } else if (length(timestamp_tmp) == 2) {
     # date and time separated: colon split should return a vector of
     # length 1 for date and length 3 for time
@@ -145,6 +146,7 @@ readFile = function(path, time_format = c()) {
                                                                  "%Y/%m/%d"))
     ts = seq(from = ts0, by = 30, length.out = nrow(cleanData))
   }
+  print(head(as.character(ts)))
   cleanData$timestamp = chartime2iso8601(as.character(ts), tz = "", time_format = time_format)
 
   # find steps column -------
