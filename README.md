@@ -2,7 +2,6 @@
 # stepmetrics
 
 <!-- badges: start -->
-[![R-CMD-check](https://github.com/jhmigueles/stepmetrics/workflows/R-CMD-check/badge.svg)](https://github.com/jhmigueles/stepmetrics/actions)
 [![Codecov test coverage](https://codecov.io/gh/jhmigueles/stepmetrics/branch/master/graph/badge.svg)](https://app.codecov.io/gh/jhmigueles/stepmetrics?branch=master)
 [![R-CMD-check](https://github.com/jhmigueles/stepmetrics/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/jhmigueles/stepmetrics/actions/workflows/R-CMD-check.yaml)
 [![R-CMD-check_standard](https://github.com/jhmigueles/stepmetrics/actions/workflows/R-CMD-check_standard.yaml/badge.svg)](https://github.com/jhmigueles/stepmetrics/actions/workflows/R-CMD-check_standard.yaml)
