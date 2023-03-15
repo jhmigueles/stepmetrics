@@ -30,7 +30,7 @@ readFile = function(path, time_format = c()) {
                    "%d/%m/%Y %H:%M")
 
     if (is.null(time_format)) {
-      POStime = as.POSIXlt(as.numeric(as.POSIXlt(x, tz, tryFormats = tryFormats)), origin = "1970-01-01", tz)
+      POStime = as.POSIXlt(as.numeric(as.POSIXlt(x, tz)), origin = "1970-01-01", tz)
     } else if (!is.null(time_format)) {
       POStime = as.POSIXlt(as.numeric(as.POSIXlt(x, tz, format = time_format)), origin = "1970-01-01", tz)
     }
