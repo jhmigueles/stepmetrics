@@ -111,10 +111,13 @@ readFile = function(path, time_format = c()) {
   epoch = as.numeric(difftime(ts[2], ts[1], units = "secs"))
   if (epoch < 60) {
     # aggregate data
-    nEpochs = nrow(data) / (60/epoch)
+    nEpochs = floor(nrow(data) / (60/epoch))
+    cleanData = cleanData[1:(nEpochs*(60/epoch)),]
     cleanData$agg = rep(1:nEpochs, each = 60/epoch)
     steps = aggregate(steps ~ agg, data = cleanData, FUN = sum)
-    cleanData = cleanData[seq(1, nrow(cleanData), by = 60/epoch),]
+    # select timestamps and remove agg column
+    cleanData = cleanData[seq(1, nrow(cleanData), by = 60/epoch), 1:2]
+    # update steps
     cleanData$steps = steps$steps
   }
   if (epoch > 60) stop("This package cannot work with epoch lengths longer than 60 seconds for now.")

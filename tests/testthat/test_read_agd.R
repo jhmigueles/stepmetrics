@@ -14,11 +14,23 @@ test_that("reads and formats ActiGraph agd data", {
     return(is.ISO)
   }
 
-  # tests ------
+  # files
   paths = dir(system.file("testfiles_agd/", package = "stepmetrics"), full.names = TRUE)
-  data = readFile(paths)
+
+  # tests ------
+  # epoch = 60 seconds
+  file1 = grep("1min", paths, value = TRUE)
+  data = readFile(file1)
 
   expect_equal(dim(data), c(1440*5, 2)) # the sample agd file contains 5 complete days
+  expect_equal(colnames(data), c("timestamp", "steps"))
+  expect_true(is.ISO8601(data$timestamp[1]))
+
+  # epoch = 10 seconds
+  file2 = grep("10secs", paths, value = TRUE)
+  data = readFile(file2)
+
+  expect_equal(dim(data), c(15232, 2))
   expect_equal(colnames(data), c("timestamp", "steps"))
   expect_true(is.ISO8601(data$timestamp[1]))
 
