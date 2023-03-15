@@ -22,6 +22,7 @@
 #' \dontrun{
 #' step.metrics(datadir = "C:/mydata/", outputdir = "D:/myoutput/")
 #' }
+#' @importFrom utils write.csv
 step.metrics = function(datadir, outputdir="./",
                         idloc = "_",
                         cadence_bands = c(0, 1, 20, 40, 60, 80, 100, 120, Inf),
@@ -116,7 +117,7 @@ step.metrics = function(datadir, outputdir="./",
     if(dir.exists(paste0(outputdir,"/daySummary"))==FALSE) {
       dir.create(paste0(outputdir,"/daySummary/"))
     }
-    write.csv(daily.out, file = paste0(outputdir,"/daySummary/", id, "_DaySum",".csv"), row.names = F)
+    utils::write.csv(daily.out, file = paste0(outputdir,"/daySummary/", id, "_DaySum",".csv"), row.names = F)
   }
 
   ################################################################################################################################
@@ -178,5 +179,5 @@ step.metrics = function(datadir, outputdir="./",
     }
   }
 
-  write.csv(output, file = paste0(outputdir,"/personSummary.csv"), row.names = FALSE)
+  utils::write.csv(output, file = paste0(outputdir,"/personSummary.csv"), row.names = FALSE)
 }

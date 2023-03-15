@@ -11,6 +11,8 @@
 #' readFile(path)
 #' }
 #' @importFrom tools file_ext
+#' @importFrom utils read.csv
+#' @importFrom stats aggregate
 #' @import PhysicalActivity
 #' @import RSQLite
 #'
@@ -46,12 +48,12 @@ readFile = function(path, time_format = c()) {
   # check separator for csv
   if (format == "csv") {
     # check separator of csv
-    test = read.csv(file, nrows = 2)
+    test = utils::read.csv(file, nrows = 2)
     if (ncol(test) >= 2) {
       sep = ","
     } else {
       #check semicolon
-      test = read.csv(file, nrows = 2, sep = ";")
+      test = utils::read.csv(file, nrows = 2, sep = ";")
       if (ncol(test) >= 2) {
         sep = ";"
       } else {
@@ -62,7 +64,7 @@ readFile = function(path, time_format = c()) {
     # read csv data (this will merge files if multiple per participant)
     data = c()
     for (i in 1:length(AllFiles)) {
-      data_i = read.csv(AllFiles[i], sep = sep)
+      data_i = utils::read.csv(AllFiles[i], sep = sep)
       data = rbind(data, data_i)
     }
   } else if (format == "agd") {
@@ -114,7 +116,7 @@ readFile = function(path, time_format = c()) {
     nEpochs = floor(nrow(data) / (60/epoch))
     cleanData = cleanData[1:(nEpochs*(60/epoch)),]
     cleanData$agg = rep(1:nEpochs, each = 60/epoch)
-    steps = aggregate(steps ~ agg, data = cleanData, FUN = sum)
+    steps = stats::aggregate(steps ~ agg, data = cleanData, FUN = sum)
     # select timestamps and remove agg column
     cleanData = cleanData[seq(1, nrow(cleanData), by = 60/epoch), 1:2]
     # update steps
