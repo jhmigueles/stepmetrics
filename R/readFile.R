@@ -163,7 +163,8 @@ readFile = function(path, time_format = c()) {
   ts = as.POSIXlt(cleanData$timestamp[1:2], format = "%Y-%m-%dT%H:%M:%S%z")
   epoch = as.numeric(difftime(ts[2], ts[1], units = "secs"))
   if (epoch < 60) {
-    print(epoch)
+    print(cleanData$timestamp[1:2])
+    print(ts[1:2])
     # aggregate data
     nEpochs = floor(nrow(data) / (60/epoch))
     cleanData = cleanData[1:(nEpochs*(60/epoch)),]
