@@ -1,3 +1,9 @@
+# stepmetrics 0.1.2
+
+(Github-only release date: 2023-??-??)
+-   Expanded functionality to work with ActiGraph csv files.
+-   Improved test coverage.
+
 # stepmetrics 0.1.1
 
 (Github-only release date: 2023-03-15)
