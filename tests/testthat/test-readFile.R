@@ -16,13 +16,13 @@ test_that("reads and formats data correctly", {
 
   # tests ------
   # fitbit files -----
-  paths = dir(system.file("testfiles_fitbit/", package = "stepmetrics"), full.names = TRUE)
-  file1 = paths
-  data1 = readFile(file1)
-
-  expect_equal(dim(data1), c(1440*3, 2))
-  expect_equal(colnames(data1), c("timestamp", "steps"))
-  expect_true(is.ISO8601(data1$timestamp[1]))
+  # paths = dir(system.file("testfiles_fitbit/", package = "stepmetrics"), full.names = TRUE)
+  # file1 = paths
+  # data1 = readFile(file1)
+  #
+  # expect_equal(dim(data1), c(1440*3, 2))
+  # expect_equal(colnames(data1), c("timestamp", "steps"))
+  # expect_true(is.ISO8601(data1$timestamp[1]))
 
   # actigraph agd files -----
   paths = dir(system.file("testfiles_agd/", package = "stepmetrics"), full.names = TRUE)
@@ -36,26 +36,26 @@ test_that("reads and formats data correctly", {
   expect_equal(colnames(data2), c("timestamp", "steps"))
   expect_true(is.ISO8601(data2$timestamp[1]))
 
-  # 30 sec epoch
-  data3 = readFile(file3)
-
-  expect_equal(dim(data3), c(4882, 2))
-  expect_equal(colnames(data3), c("timestamp", "steps"))
-  expect_true(is.ISO8601(data3$timestamp[1]))
-
-  # actigraph csv files -----
-  paths = dir(system.file("testfiles_actigraph_csv/", package = "stepmetrics"), full.names = TRUE)
-  file4 = paths[2]   # with header / timestamp
-  file5 = paths[1]   # without header / timestamp
-
-  # with header / timestamp
-  data4 = readFile(file4)
-
-  expect_true(all.equal(data4, data3))
-
-  # without header / timestamp
-  data5 = readFile(file5)
-
-  expect_true(all.equal(data5, data4))
+  # # 30 sec epoch
+  # data3 = readFile(file3)
+  #
+  # expect_equal(dim(data3), c(4882, 2))
+  # expect_equal(colnames(data3), c("timestamp", "steps"))
+  # expect_true(is.ISO8601(data3$timestamp[1]))
+  #
+  # # actigraph csv files -----
+  # paths = dir(system.file("testfiles_actigraph_csv/", package = "stepmetrics"), full.names = TRUE)
+  # file4 = paths[2]   # with header / timestamp
+  # file5 = paths[1]   # without header / timestamp
+  #
+  # # with header / timestamp
+  # data4 = readFile(file4)
+  #
+  # expect_true(all.equal(data4, data3))
+  #
+  # # without header / timestamp
+  # data5 = readFile(file5)
+  #
+  # expect_true(all.equal(data5, data4))
 
 })

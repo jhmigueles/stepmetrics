@@ -22,20 +22,17 @@ readFile = function(path, time_format = c()) {
   chartime2iso8601 = function(x,tz = "", time_format = c()){
     # try formats if not provided
     tryFormats = c("%Y-%m-%d %H:%M:%S",
-                   "%Y/%m/%d %H:%M:%S",
                    "%Y-%m-%d %H:%M:%OS",
-                   "%Y/%m/%d %H:%M:%OS",
                    "%Y-%m-%d %H:%M",
-                   "%Y/%m/%d %H:%M",
+                   "%m/%d/%Y %H:%M:%S",
                    "%m/%d/%Y %H:%M",
                    "%d/%m/%Y %H:%M:%S",
-                   "%Y-%m-%d",
-                   "%Y/%m/%d")
+                   "%d/%m/%Y %H:%M")
 
     if (is.null(time_format)) {
-      POStime = as.POSIXlt(as.numeric(as.POSIXlt(x,tz, tryFormats = tryFormats)), origin = "1970-01-01", tz)
+      POStime = as.POSIXlt(as.numeric(as.POSIXlt(x, tz, tryFormats = tryFormats)), origin = "1970-01-01", tz)
     } else if (!is.null(time_format)) {
-      POStime = as.POSIXlt(as.numeric(as.POSIXlt(x,tz, format = time_format)), origin = "1970-01-01", tz)
+      POStime = as.POSIXlt(as.numeric(as.POSIXlt(x, tz, format = time_format)), origin = "1970-01-01", tz)
     }
     POStimeISO = strftime(POStime, format = "%Y-%m-%dT%H:%M:%S%z")
     return(POStimeISO)
