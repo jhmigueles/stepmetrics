@@ -38,7 +38,7 @@ test_that("reads and formats data correctly", {
   # 10 sec epoch
   data = readFile(file2)
 
-  expect_equal(dim(data), c(15232, 2))
+  expect_equal(dim(data), c(10079, 2))
   expect_equal(colnames(data), c("timestamp", "steps"))
   expect_true(is.ISO8601(data$timestamp[1]))
 

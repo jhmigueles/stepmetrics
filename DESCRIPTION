@@ -1,6 +1,6 @@
 Package: stepmetrics
 Type: Package
-Title: Calculate Step And Cadence Metrics
+Title: Calculate Step and Cadence Metrics
 Version: 0.1.0
 Author: Jairo Hidalgo Migueles
 Maintainer: Jairo Hidalgo Migueles <jairo.hidalgo.migueles@gmail.com>
