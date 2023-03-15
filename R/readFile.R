@@ -125,7 +125,7 @@ readFile = function(path, time_format = c()) {
   timestamp_tmp = grep("date|time", colnames(data), value = TRUE)
   if (length(timestamp_tmp) == 1) {
     ts = data[, timestamp_tmp]
-    print(head(ts))
+    print(paste("read from agd", ts[1:2]))
   } else if (length(timestamp_tmp) == 2) {
     # date and time separated: colon split should return a vector of
     # length 1 for date and length 3 for time
@@ -146,8 +146,9 @@ readFile = function(path, time_format = c()) {
                                                                  "%Y/%m/%d"))
     ts = seq(from = ts0, by = 30, length.out = nrow(cleanData))
   }
-  print(head(as.character(ts)))
+  print(paste("as character", as.character(ts)[1:2]))
   cleanData$timestamp = chartime2iso8601(as.character(ts), tz = "", time_format = time_format)
+  print(paste("conv2ISO", cleanData$timestamp[1:2]))
 
   # find steps column -------
   steps_tmp = grep("step|value", colnames(data), value = TRUE)
