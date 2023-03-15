@@ -58,42 +58,42 @@ step.metrics = function(datadir, outputdir="./",
     day = define_day_indices(data$timestamp)
 
     #Loop through days to calculate variables
-    for (di in 1:length(unique(day))){
+    for (di in 1:length(unique(day))) {
 
       # ID
       id = ids[i]
 
       #Date
       if (di == 1) date = wday = wday_num = c()
-      date[di] = strsplit(data$timestamp[which(day==di)[1]], "T")[[1]][1]
-      wday[di] = format(as.POSIXct(data[which(day==di)[1],1]),"%a")
-      wday_num[di] = format(as.POSIXct(data[which(day==di)[1],1]),"%u")
+      date[di] = strsplit(data$timestamp[which(day == di)[1]], "T")[[1]][1]
+      wday[di] = format(as.POSIXct(data[which(day == di)[1],1]),"%a")
+      wday_num[di] = format(as.POSIXct(data[which(day == di)[1],1]),"%u")
 
       #Duration of the day (number of minutes recorded)
       if (di == 1) record.min = c()
-      record.min[di] = length(data[which(day==di),"steps"])
+      record.min[di] = length(data[which(day == di),"steps"])
 
       #Steps/day
       if (di == 1) stepsperday = c()
-      stepsperday[di] = sum(data[which(day==di),"steps"])
+      stepsperday[di] = sum(data[which(day == di),"steps"])
 
       #Peaks cadence
       if (di == 1) CAD_peaks = list()
       if (di == 1) CAD_peaks_spm = c()
-      CAD_peaks[[di]] = get_cadence_peaks(x = data[which(day==di),"steps"], peaks = cadence_peaks)
+      CAD_peaks[[di]] = get_cadence_peaks(x = data[which(day == di),"steps"], peaks = cadence_peaks)
       CAD_peaks_spm = rbind(CAD_peaks_spm, CAD_peaks[[di]]$values)
 
       #Cadence band levels
       if (di == 1) CAD_bands = list()
       if (di == 1) CAD_bands_spm = c()
-      CAD_bands[[di]] = get_cadence_bands(x = data[which(day==di),"steps"], bands = cadence_bands)
+      CAD_bands[[di]] = get_cadence_bands(x = data[which(day == di),"steps"], bands = cadence_bands)
       CAD_bands_spm = rbind(CAD_bands_spm, CAD_bands[[di]]$values)
 
       #MPA, VPA, MVPA
       if (di == 1) MPA = VPA = MVPA = c()
-      MPA[di] = length(which(data[which(day==di),"steps"] < cadence_VIG & data[which(day==di),"steps"] >= cadence_MOD))
-      VPA[di] = length(which(data[which(day==di),"steps"] >= cadence_VIG))
-      MVPA[di] = length(which(data[which(day==di),"steps"] >= cadence_MOD))
+      MPA[di] = length(which(data[which(day == di),"steps"] < cadence_VIG & data[which(day == di),"steps"] >= cadence_MOD))
+      VPA[di] = length(which(data[which(day == di),"steps"] >= cadence_VIG))
+      MVPA[di] = length(which(data[which(day == di),"steps"] >= cadence_MOD))
     }
 
     ##OUTPUT PER DAY
@@ -101,20 +101,20 @@ step.metrics = function(datadir, outputdir="./",
                   "stepsperday", CAD_peaks[[1]]$names, CAD_bands[[1]]$names,
                   "MPA_min","VPA_min","MVPA_min")
 
-    daily.out = data.frame(matrix(NA, length(unique(day[which(is.na(day)==FALSE)])), length(names.out)))
+    daily.out = data.frame(matrix(NA, length(unique(day[which(is.na(day) == FALSE)])), length(names.out)))
     colnames(daily.out) = names.out
 
-    fi=1
-    daily.out[,fi] = id; fi=fi+1
-    daily.out[,fi:(fi+2)] = cbind(date, wday, as.numeric(wday_num)); fi=fi+3
-    daily.out[,fi] = record.min; fi=fi+1
-    daily.out[,fi:(fi+1)] = cbind(rep(cadence_MOD, times=nrow(daily.out)),rep(cadence_VIG, times=nrow(daily.out))); fi=fi+2
+    fi = 1
+    daily.out[,fi] = id; fi = fi + 1
+    daily.out[,fi:(fi + 2)] = cbind(date, wday, as.numeric(wday_num)); fi = fi + 3
+    daily.out[,fi] = record.min; fi = fi + 1
+    daily.out[,fi:(fi + 1)] = cbind(rep(cadence_MOD, times = nrow(daily.out)), rep(cadence_VIG, times = nrow(daily.out))); fi = fi + 2
     daily.out[,fi:ncol(daily.out)] = cbind(stepsperday, CAD_peaks_spm, CAD_bands_spm, MPA, VPA, MVPA)
     # Create output directory
-    if(dir.exists(outputdir)==FALSE) {
+    if (dir.exists(outputdir) == FALSE) {
       dir.create(outputdir)
     }
-    if(dir.exists(paste0(outputdir,"/daySummary"))==FALSE) {
+    if (dir.exists(paste0(outputdir,"/daySummary")) == FALSE) {
       dir.create(paste0(outputdir,"/daySummary/"))
     }
     utils::write.csv(daily.out, file = paste0(outputdir,"/daySummary/", id, "_DaySum",".csv"), row.names = F)
@@ -140,29 +140,29 @@ step.metrics = function(datadir, outputdir="./",
   output = data.frame(matrix(NA, length(files), length(names.out.2)))
   colnames(output) = names.out.2
   #Loop through files to calculate mean variables
-  for (i in 1:length(files)){
+  for (i in 1:length(files)) {
     print(i)
     D = read.csv(paste0(outputdir,"/daySummary/", files[i]))
     exclude = sum(D$dur_day_min < includedaycrit * 60)
-    if(exclude > 0) D = D[-which(D$dur_day_min < includedaycrit * 60),]
-    if(exclude_pk30_0 == TRUE){
+    if (exclude > 0) D = D[-which(D$dur_day_min < includedaycrit * 60),]
+    if (exclude_pk30_0 == TRUE) {
       zeroes = sum(D$CAD_nZeroes_pk30 > 0)
-      if(zeroes > 0) D = D[-which(D$CAD_nZeroes_pk30 > 0),]
+      if (zeroes > 0) D = D[-which(D$CAD_nZeroes_pk30 > 0),]
     }
-    if(exclude_pk60_0 == TRUE){
+    if (exclude_pk60_0 == TRUE) {
       zeroes = sum(D$CAD_nZeroes_pk60 > 0)
-      if(zeroes > 0) D = D[-which(D$CAD_nZeroes_pk60 > 0),]
+      if (zeroes > 0) D = D[-which(D$CAD_nZeroes_pk60 > 0),]
     }
-    fi=1                                                  #fi is the column of the new output data frame
-    output[i,fi] = D[1, 1]; fi=fi+1
-    output[i,fi] = D[1,"date"]; fi=fi+1
-    output[i,fi] = nrow(D); fi=fi+1
-    output[i,fi] = sum(D$weekday_num < 6); fi=fi+1
-    output[i,fi] = sum(D$weekday_num >= 6); fi=fi+1
-    output[i,fi:(fi+1)] = c(cadence_MOD, cadence_VIG); fi=fi+2
+    fi = 1                                                  #fi is the column of the new output data frame
+    output[i,fi] = D[1, 1]; fi = fi + 1
+    output[i,fi] = D[1,"date"]; fi = fi + 1
+    output[i,fi] = nrow(D); fi = fi + 1
+    output[i,fi] = sum(D$weekday_num < 6); fi = fi + 1
+    output[i,fi] = sum(D$weekday_num >= 6); fi = fi + 1
+    output[i,fi:(fi + 1)] = c(cadence_MOD, cadence_VIG); fi = fi + 2
 
     # averages
-    for (mi in 8:ncol(D)){
+    for (mi in 8:ncol(D)) {
       columns = grep(colnames(D)[mi], colnames(output), value = TRUE)
       # plain
       fi = grep("_pla", columns, value = TRUE)
