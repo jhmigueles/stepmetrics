@@ -4,6 +4,7 @@
 <!-- badges: start -->
 [![R-CMD-check_standard](https://github.com/jhmigueles/stepmetrics/actions/workflows/R-CMD-check_standard.yaml/badge.svg)](https://github.com/jhmigueles/stepmetrics/actions/workflows/R-CMD-check_standard.yaml)
 [![Codecov test coverage](https://codecov.io/gh/jhmigueles/stepmetrics/branch/master/graph/badge.svg)](https://app.codecov.io/gh/jhmigueles/stepmetrics?branch=master)
+[![DOI](https://zenodo.org/badge/613043353.svg)](https://zenodo.org/badge/latestdoi/613043353)
 <!-- badges: end -->
 
 The goal of stepmetrics is to calculate step and cadence metrics from aggregated 
