@@ -21,7 +21,9 @@ readFile = function(path, time_format = c()) {
   # function to handle timestamp format
   chartime2iso8601 = function(x,tz = "", time_format = c()){
     # try formats if not provided
-    tryFormats = c("%Y-%m-%d %H:%M:%OS",
+    tryFormats = c("%Y-%m-%d %H:%M:%S",
+                   "%Y/%m/%d %H:%M:%S",
+                   "%Y-%m-%d %H:%M:%OS",
                    "%Y/%m/%d %H:%M:%OS",
                    "%Y-%m-%d %H:%M",
                    "%Y/%m/%d %H:%M",
