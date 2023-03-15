@@ -83,15 +83,12 @@ readFile = function(path, time_format = c()) {
   if (length(timestamp_tmp) == 1) {
     ts = data[, timestamp_tmp]
   } else {
-    #date and time separated
-    colonSplit = unlist(strsplit(data[1, timestamp_tmp[1]], split = ":"))
-    if (length(colonSplit) == 1) { # then, this is the date
-      date_column = timestamp_tmp[1]
-      time_column = timestamp_tmp[2]
-    } else {
-      date_column = timestamp_tmp[2]
-      time_column = timestamp_tmp[1]
-    }
+    # date and time separated: colon split should return a vector of
+    # length 1 for date and length 3 for time
+    colonSplit1 = length(unlist(strsplit(data[1, timestamp_tmp[1]], split = ":")))
+    colonSplit2 = length(unlist(strsplit(data[1, timestamp_tmp[2]], split = ":")))
+    date_column = timestamp_tmp[which(c(colonSplit1, colonSplit2) == 1)]
+    time_column = timestamp_tmp[which(c(colonSplit1, colonSplit2) == 3)]
     # define timestamp
     ts = paste(data[, date_column], data[, time_column])
   }
@@ -103,12 +100,10 @@ readFile = function(path, time_format = c()) {
     cleanData$steps = data[, steps_tmp]
   } else {
     # look for steps per minute
-    uniqueSteps = unique(data[, steps_tmp[1]])
-    if (length(uniqueSteps) > 50) {
-      cleanData$steps = data[, steps_tmp[1]]
-    } else {
-      cleanData$steps = data[, steps_tmp[2]]
-    }
+    uniqueSteps1 = length(unique(data[, steps_tmp[1]]))
+    uniqueSteps2 = length(unique(data[, steps_tmp[2]]))
+    steps_tmp = steps_tmp[which.max(c(uniqueSteps1, uniqueSteps2))]
+    cleanData$steps = data[, steps_tmp]
   }
 
   # aggregate to 1-min epoch if needed -----
