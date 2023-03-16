@@ -9,7 +9,7 @@ License: AGPL (>= 3)
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.2.3
-Imports: PhysicalActivity, RSQLite, tools, stats, utils
+Imports: PhysicalActivity, RSQLite, tools, stats, utils, lubridate
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
