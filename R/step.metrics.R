@@ -13,6 +13,7 @@
 #' @param idloc Character (default = "_"). The ID is expected to be before the character(s) specified by \code{idloc} in the filename
 #' @param cadence_bands Numeric (default = c(0, 1, 20, 40, 60, 80, 100, 120, Inf)). Cadence bands to calculate the time accumulated into.
 #' @param cadence_peaks Numeric (default = c(1, 30, 60)). Cadence peaks to calculate.
+#' @param verbose logical (default = TRUE). Whether to print progress messages in the console.
 #'
 #' @return This function does not return any object. It stores csv files with the
 #'          day-level and person-level data in the output directory.
