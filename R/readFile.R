@@ -15,6 +15,7 @@
 #' @importFrom stats aggregate
 #' @import PhysicalActivity
 #' @import RSQLite
+#' @import lubridate
 #'
 readFile = function(path, time_format = c()) {
 
@@ -26,11 +27,12 @@ readFile = function(path, time_format = c()) {
                    "%m/%d/%Y %H:%M:%S", "%m/%d/%Y %H:%M",
                    "%d/%m/%Y %H:%M:%S", "%d/%m/%Y %H:%M")
 
-    if (is.null(time_format)) {
-      POStime = as.POSIXlt(as.numeric(as.POSIXlt(x, tz, tryFormats = tryFormats)), origin = "1970-01-01", tz)
-    } else if (!is.null(time_format)) {
-      POStime = as.POSIXlt(as.numeric(as.POSIXlt(x, tz, format = time_format)), origin = "1970-01-01", tz)
-    }
+    # if (is.null(time_format)) {
+    #   POStime = as.POSIXlt(as.numeric(as.POSIXlt(x, tz, tryFormats = tryFormats)), origin = "1970-01-01", tz)
+    # } else if (!is.null(time_format)) {
+    #   POStime = as.POSIXlt(as.numeric(as.POSIXlt(x, tz, format = time_format)), origin = "1970-01-01", tz)
+    # }
+    POStime = lubridate::as_datetime(x, format = tryFormats)
     POStimeISO = strftime(POStime, format = "%Y-%m-%dT%H:%M:%S%z")
     return(POStimeISO)
   }
@@ -121,7 +123,6 @@ readFile = function(path, time_format = c()) {
   timestamp_tmp = grep("date|time", colnames(data), value = TRUE)
   if (length(timestamp_tmp) == 1) {
     ts = data[, timestamp_tmp]
-    print(paste("read from agd", ts[1:2]))
   } else if (length(timestamp_tmp) == 2) {
     # date and time separated: colon split should return a vector of
     # length 1 for date and length 3 for time
@@ -142,9 +143,7 @@ readFile = function(path, time_format = c()) {
                                                                  "%Y/%m/%d"))
     ts = seq(from = ts0, by = 30, length.out = nrow(cleanData))
   }
-  print(paste("as character", as.character(ts)[1:2]))
   cleanData$timestamp = chartime2iso8601(as.character(ts), tz = "", time_format = time_format)
-  print(paste("conv2ISO", cleanData$timestamp[1:2]))
 
   # find steps column -------
   steps_tmp = grep("step|value", colnames(data), value = TRUE)
@@ -162,8 +161,6 @@ readFile = function(path, time_format = c()) {
   ts = as.POSIXlt(cleanData$timestamp[1:2], format = "%Y-%m-%dT%H:%M:%S%z")
   epoch = as.numeric(difftime(ts[2], ts[1], units = "secs"))
   if (epoch < 60) {
-    print(cleanData$timestamp[1:2])
-    print(ts[1:2])
     # aggregate data
     nEpochs = floor(nrow(data) / (60/epoch))
     cleanData = cleanData[1:(nEpochs*(60/epoch)),]

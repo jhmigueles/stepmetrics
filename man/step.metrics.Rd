@@ -15,7 +15,8 @@ step.metrics(
   includedaycrit = 10,
   exclude_pk30_0 = TRUE,
   exclude_pk60_0 = TRUE,
-  time_format = NULL
+  time_format = NULL,
+  verbose = TRUE
 )
 }
 \arguments{

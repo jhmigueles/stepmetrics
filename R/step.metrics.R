@@ -32,7 +32,8 @@ step.metrics = function(datadir, outputdir="./",
                         includedaycrit = 10,
                         exclude_pk30_0 = TRUE,
                         exclude_pk60_0 = TRUE,
-                        time_format = NULL){
+                        time_format = NULL,
+                        verbose = TRUE){
 
   # Files to analyse ----
   files_fn = dir(datadir, pattern = "*.csv|*.agd", full.names = TRUE)
@@ -45,11 +46,15 @@ step.metrics = function(datadir, outputdir="./",
   }
   ids = unique(ids)
 
-  print("Calculating features per day")
+  if (verbose == TRUE) {
+    cat('\n')
+    cat(paste0(rep('_', options()$width), collapse = ''))
+    cat("\nCalculating features per day...\n")
+  }
 
   #Loop through the files
   for (i in 1:length(ids)) {
-    print(i)
+    if (verbose == TRUE) cat(i)
     # read data ----
     files2read = grep(ids[i], files_fn, value = TRUE)
     data = readFile(files2read)
@@ -123,7 +128,11 @@ step.metrics = function(datadir, outputdir="./",
   ################################################################################################################################
   #Calculate means per week plain and weighted
 
-  print("Calculating means per week")
+  if (verbose == TRUE) {
+    cat('\n')
+    cat(paste0(rep('_', options()$width), collapse = ''))
+    cat("\nCalculating means per recording\n")
+  }
 
   files = dir(paste0(outputdir, "/daySummary"))
 
@@ -141,7 +150,7 @@ step.metrics = function(datadir, outputdir="./",
   colnames(output) = names.out.2
   #Loop through files to calculate mean variables
   for (i in 1:length(files)) {
-    print(i)
+    if (verbose == TRUE) cat(i)
     D = read.csv(paste0(outputdir,"/daySummary/", files[i]))
     exclude = sum(D$dur_day_min < includedaycrit * 60)
     if (exclude > 0) D = D[-which(D$dur_day_min < includedaycrit * 60),]
