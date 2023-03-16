@@ -15,7 +15,6 @@
 #' @importFrom stats aggregate
 #' @import PhysicalActivity
 #' @import RSQLite
-#' @importFrom lubridate as_datetime
 #'
 readFile = function(path, time_format = c()) {
 
@@ -23,16 +22,16 @@ readFile = function(path, time_format = c()) {
   chartime2iso8601 = function(x,tz = "", time_format = c()){
     # try formats if not provided
     tryFormats = c("%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H:%M",
+                   "%d/%m/%Y %H:%M:%S", "%d/%m/%Y %H:%M",
                    "%Y-%m-%d %H:%M:%OS",
-                   "%m/%d/%Y %H:%M:%S", "%m/%d/%Y %H:%M",
-                   "%d/%m/%Y %H:%M:%S", "%d/%m/%Y %H:%M")
+                   "%m/%d/%Y %H:%M:%S", "%m/%d/%Y %H:%M")
 
-    # if (is.null(time_format)) {
-    #   POStime = as.POSIXlt(as.numeric(as.POSIXlt(x, tz, tryFormats = tryFormats)), origin = "1970-01-01", tz)
-    # } else if (!is.null(time_format)) {
-    #   POStime = as.POSIXlt(as.numeric(as.POSIXlt(x, tz, format = time_format)), origin = "1970-01-01", tz)
-    # }
-    POStime = lubridate::as_datetime(x, format = tryFormats)
+    if (is.null(time_format)) {
+      POStime = as.POSIXlt(as.numeric(as.POSIXlt(x, tz, tryFormats = tryFormats)), origin = "1970-01-01", tz)
+    } else if (!is.null(time_format)) {
+      POStime = as.POSIXlt(as.numeric(as.POSIXlt(x, tz, format = time_format)), origin = "1970-01-01", tz)
+    }
+    # POStime = lubridate::as_datetime(x, format = tryFormats)
     POStimeISO = strftime(POStime, format = "%Y-%m-%dT%H:%M:%S%z")
     return(POStimeISO)
   }
@@ -109,7 +108,7 @@ readFile = function(path, time_format = c()) {
   } else if (format == "agd") {
     data = c()
     for (i in 1:length(AllFiles)) {
-      data_i = PhysicalActivity::readActigraph(AllFiles[i])
+      data_i = PhysicalActivity::readActigraph(AllFiles[i], convertTime = FALSE)
       data = rbind(data, data_i)
     }
   }
