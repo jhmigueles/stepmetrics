@@ -15,7 +15,7 @@
 #' @importFrom stats aggregate
 #' @import PhysicalActivity
 #' @import RSQLite
-#' @import lubridate
+#' @importFrom lubridate as_datetime
 #'
 readFile = function(path, time_format = c()) {
 

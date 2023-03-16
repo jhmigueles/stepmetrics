@@ -41,6 +41,8 @@ step.metrics(
 \item{exclude_pk60_0}{Logical (default = TRUE)}
 
 \item{time_format}{Character (default = NULL)}
+
+\item{verbose}{logical (default = TRUE). Whether to print progress messages in the console.}
 }
 \value{
 This function does not return any object. It stores csv files with the
