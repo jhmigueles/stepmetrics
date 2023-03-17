@@ -141,6 +141,7 @@ readFile = function(path, time_format = c()) {
     epoch_tmp = as.numeric(unlist(strsplit(meta_agd[2], ":")))
     epoch = epoch_tmp[1]*(60^2) + epoch_tmp[2]*60 + epoch_tmp[3]
     data$TimeStamp = seq(starttime, by = epoch, length.out = nrow(data))
+    time_format = "%Y-%m-%d %H:%M:%S"
   }
 
   # set up object to return ----
