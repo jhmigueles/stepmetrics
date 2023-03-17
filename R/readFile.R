@@ -63,6 +63,8 @@ readFile = function(path, time_format = c()) {
       startdate = gsub("start date ", "", test[d0,1], ignore.case = TRUE)
       starttime = gsub("start time ", "", test[t0,1], ignore.case = TRUE)
 
+      print(paste(startdate, starttime))
+
       # redefine skip
       skip = 10
       test = utils::read.csv(file, nrows = 2, skip = skip, header = header)
@@ -168,9 +170,8 @@ readFile = function(path, time_format = c()) {
                                                                  "%Y-%m-%d %H:%M",
                                                                  "%Y/%m/%d %H:%M",
                                                                  "%m/%d/%Y %H:%M",
-                                                                 "%d/%m/%Y %H:%M:%S",
-                                                                 "%Y-%m-%d",
-                                                                 "%Y/%m/%d"))
+                                                                 "%m/%d/%Y %H:%M:%S",
+                                                                 "%d/%m/%Y %H:%M:%S"))
     ts = seq(from = ts0, by = 30, length.out = nrow(cleanData))
   }
   cleanData$timestamp = chartime2iso8601(as.character(ts), tz = "", time_format = time_format)
