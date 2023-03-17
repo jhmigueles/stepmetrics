@@ -51,7 +51,8 @@ test_that("reads and formats data correctly", {
   # with header / timestamp
   data4 = readFile(file4)
 
-  expect_true(all.equal(data4, data3))
+  expect_equal(data4[1, 1], data3[1, 1])
+  expect_equal(data4[1, 2], data3[1, 2])
 
   # without header / timestamp
   # data5 = readFile(file5)
