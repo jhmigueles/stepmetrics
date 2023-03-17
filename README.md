@@ -29,7 +29,8 @@ This is a basic example which shows you how to calculate the step and cadence me
 
 ``` r
 library(stepmetrics)
-step.metrics(datadir = "C:/mydata/", outputdir = "C:/myoutput/",idloc = "_",
+step.metrics(datadir = "C:/mydata/", outputdir = "C:/myoutput/",
+             idloc = "_",
              cadence_bands = c(0, 1, 20, 40, 60, 80, 100, 120, Inf),
              cadence_peaks = c(1, 30, 60),
              cadence_MOD = 100,

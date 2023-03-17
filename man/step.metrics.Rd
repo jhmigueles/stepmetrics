@@ -15,7 +15,8 @@ step.metrics(
   includedaycrit = 10,
   exclude_pk30_0 = TRUE,
   exclude_pk60_0 = TRUE,
-  time_format = NULL
+  time_format = NULL,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -40,6 +41,8 @@ step.metrics(
 \item{exclude_pk60_0}{Logical (default = TRUE)}
 
 \item{time_format}{Character (default = NULL)}
+
+\item{verbose}{logical (default = TRUE). Whether to print progress messages in the console.}
 }
 \value{
 This function does not return any object. It stores csv files with the

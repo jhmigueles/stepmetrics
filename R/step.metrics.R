@@ -13,6 +13,7 @@
 #' @param idloc Character (default = "_"). The ID is expected to be before the character(s) specified by \code{idloc} in the filename
 #' @param cadence_bands Numeric (default = c(0, 1, 20, 40, 60, 80, 100, 120, Inf)). Cadence bands to calculate the time accumulated into.
 #' @param cadence_peaks Numeric (default = c(1, 30, 60)). Cadence peaks to calculate.
+#' @param verbose logical (default = TRUE). Whether to print progress messages in the console.
 #'
 #' @return This function does not return any object. It stores csv files with the
 #'          day-level and person-level data in the output directory.
@@ -32,7 +33,8 @@ step.metrics = function(datadir, outputdir="./",
                         includedaycrit = 10,
                         exclude_pk30_0 = TRUE,
                         exclude_pk60_0 = TRUE,
-                        time_format = NULL){
+                        time_format = NULL,
+                        verbose = TRUE){
 
   # Files to analyse ----
   files_fn = dir(datadir, pattern = "*.csv|*.agd", full.names = TRUE)
@@ -45,11 +47,15 @@ step.metrics = function(datadir, outputdir="./",
   }
   ids = unique(ids)
 
-  print("Calculating features per day")
+  if (verbose == TRUE) {
+    cat('\n')
+    cat(paste0(rep('_', options()$width), collapse = ''))
+    cat("\nCalculating features per day...\n")
+  }
 
   #Loop through the files
   for (i in 1:length(ids)) {
-    print(i)
+    if (verbose == TRUE) cat(i)
     # read data ----
     files2read = grep(ids[i], files_fn, value = TRUE)
     data = readFile(files2read)
@@ -123,7 +129,11 @@ step.metrics = function(datadir, outputdir="./",
   ################################################################################################################################
   #Calculate means per week plain and weighted
 
-  print("Calculating means per week")
+  if (verbose == TRUE) {
+    cat('\n')
+    cat(paste0(rep('_', options()$width), collapse = ''))
+    cat("\nCalculating means per recording\n")
+  }
 
   files = dir(paste0(outputdir, "/daySummary"))
 
@@ -141,7 +151,7 @@ step.metrics = function(datadir, outputdir="./",
   colnames(output) = names.out.2
   #Loop through files to calculate mean variables
   for (i in 1:length(files)) {
-    print(i)
+    if (verbose == TRUE) cat(i)
     D = read.csv(paste0(outputdir,"/daySummary/", files[i]))
     exclude = sum(D$dur_day_min < includedaycrit * 60)
     if (exclude > 0) D = D[-which(D$dur_day_min < includedaycrit * 60),]
