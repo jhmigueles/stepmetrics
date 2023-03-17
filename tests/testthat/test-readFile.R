@@ -52,6 +52,9 @@ test_that("reads and formats data correctly", {
   data4 = readFile(file4)
 
   expect_true(all.equal(data4, data3))
+  if (all.equal(data4, data3) == FALSE) {
+    print(cbind(data4, data3))
+  }
 
   # without header / timestamp
   data5 = readFile(file5)

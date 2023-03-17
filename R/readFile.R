@@ -167,11 +167,11 @@ readFile = function(path, time_format = c()) {
   } else if (length(timestamp_tmp) == 0) {
     ts0 = as.POSIXlt(paste(startdate, starttime), tryFormats = c("%Y-%m-%d %H:%M:%OS",
                                                                  "%Y/%m/%d %H:%M:%OS",
+                                                                 "%d/%m/%Y %H:%M:%S",
                                                                  "%Y-%m-%d %H:%M",
                                                                  "%Y/%m/%d %H:%M",
                                                                  "%m/%d/%Y %H:%M",
-                                                                 "%m/%d/%Y %H:%M:%S",
-                                                                 "%d/%m/%Y %H:%M:%S"))
+                                                                 "%m/%d/%Y %H:%M:%S"))
     ts = seq(from = ts0, by = 30, length.out = nrow(cleanData))
   }
   cleanData$timestamp = chartime2iso8601(as.character(ts), tz = "", time_format = time_format)
