@@ -163,8 +163,8 @@ readFile = function(path, time_format = c()) {
     # define timestamp
     ts = paste(data[, date_column], data[, time_column])
   } else if (length(timestamp_tmp) == 0) {
-    ts0 = as.POSIXlt(paste(startdate, starttime), tryFormats = c("%Y-%m-%d %H:%M:%OS",
-                                                                 "%Y/%m/%d %H:%M:%OS",
+    ts0 = as.POSIXlt(paste(startdate, starttime), tryFormats = c("%Y-%m-%d %H:%M:%S",
+                                                                 "%Y/%m/%d %H:%M:%S",
                                                                  "%d/%m/%Y %H:%M:%S",
                                                                  "%Y-%m-%d %H:%M",
                                                                  "%Y/%m/%d %H:%M",
