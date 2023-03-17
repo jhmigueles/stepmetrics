@@ -68,7 +68,6 @@ test_that("reads and formats data correctly", {
   expect_equal(data5[nrow(data5), 2], data4[nrow(data4), 2])
   expect_equal(data5[nrow(data5), 2], data4[nrow(data4), 2])
 
-
   # semicolon separated csv
   data6 = readFile(file6)
 
@@ -77,5 +76,11 @@ test_that("reads and formats data correctly", {
   expect_equal(data6[1, 2], data5[1, 2])
   expect_equal(data6[nrow(data6), 2], data5[nrow(data5), 2])
   expect_equal(data6[nrow(data6), 2], data5[nrow(data5), 2])
+
+  # GGIR output
+  paths = dir(system.file("testfiles_GGIR//", package = "stepmetrics"), full.names = TRUE)
+
+
+
 
 })

@@ -20,7 +20,7 @@ step.metrics(
 )
 }
 \arguments{
-\item{datadir}{Character (no default). Directory where the files containing the steps data are stored, e.g., "C:/mydata/".}
+\item{datadir}{Character (no default). Directory where the files containing the steps data are stored, e.g., "C:/mydata/". If you are trying to process GGIR output, then this should be the output directory from GGIR (name starts with "output_").}
 
 \item{outputdir}{Character (no default). Directory where the output needs to be stored. Note that this function will attempt to create folders in this directory and uses those folder to keep output.}
 
