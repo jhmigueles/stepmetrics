@@ -45,8 +45,9 @@ test_that("reads and formats data correctly", {
 
   # actigraph csv files -----
   paths = dir(system.file("testfiles_actigraph_csv/", package = "stepmetrics"), full.names = TRUE)
-  file4 = paths[2]   # with header / timestamp
-  file5 = paths[1]   # without header / timestamp
+  file4 = grep("datatable", paths, value = TRUE)   # with header / timestamp
+  file5 = grep("noTS", paths, value = TRUE)        # without header / timestamp
+  file6 = grep("semicolon", paths, value = TRUE)        # without header / timestamp
 
   # with header / timestamp
   data4 = readFile(file4)
@@ -66,5 +67,15 @@ test_that("reads and formats data correctly", {
   expect_equal(data5[1, 2], data4[1, 2])
   expect_equal(data5[nrow(data5), 2], data4[nrow(data4), 2])
   expect_equal(data5[nrow(data5), 2], data4[nrow(data4), 2])
+
+
+  # semicolon separated csv
+  data6 = readFile(file6)
+
+  expect_equal(dim(data6), dim(data5))
+  expect_equal(data6[1, 1], data5[1, 1])
+  expect_equal(data6[1, 2], data5[1, 2])
+  expect_equal(data6[nrow(data6), 2], data5[nrow(data5), 2])
+  expect_equal(data6[nrow(data6), 2], data5[nrow(data5), 2])
 
 })

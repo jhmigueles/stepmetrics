@@ -52,7 +52,7 @@ readFile = function(path, time_format = c()) {
     isActiGraph = any(grepl("ActiGraph", colnames(test)))
 
     # define skip and header for specific formats of actigraph
-    skip = 0; header = TRUE
+    sep = ","; skip = 0; header = TRUE
     column_names = NULL; startdate = NULL; starttime = NULL
 
     if (isActiGraph) {
@@ -67,23 +67,28 @@ readFile = function(path, time_format = c()) {
       skip = 10
       test = utils::read.csv(file, nrows = 2, skip = skip, header = header)
 
+      # check separator for csv file
+      if (ncol(test) < 2) {
+        #check semicolon
+        test = utils::read.csv(file, nrows = 2, skip = skip, header = header, sep = ";")
+        if (ncol(test) >= 2) {
+          sep = ";"
+        }
+      }
+
       # header?
       if (colnames(test)[1] != "Date") { # no header
         header = FALSE
-        test = utils::read.csv(file, nrows = 2, skip = skip, header = header)
-        if (ncol(test) == 9) {
-          column_names = c("Axis1", "Axis2", "Axis3", "Steps",
-                           "Lux", "Inclinometer Off", "Inclinometer Standing",
-                           "Inclinometer Sitting", "Inclinometer Lying")
-        } else if (ncol(test) == 12) {
-          column_names = c("Date", "Time", "Axis1", "Axis2", "Axis3", "Steps",
-                           "Lux", "Inclinometer Off", "Inclinometer Standing",
-                           "Inclinometer Sitting", "Inclinometer Lying", "Vector Magnitude")
-        }
+        test = utils::read.csv(file, nrows = 2, sep = sep, skip = skip, header = header)
+        column_names = c("Axis1", "Axis2", "Axis3", "Steps",
+                         "Lux", "Inclinometer Off", "Inclinometer Standing",
+                         "Inclinometer Sitting", "Inclinometer Lying")
+
       }
     }
 
     # check separator for csv file
+    test = utils::read.csv(file, skip = skip, nrows = 2)
     if (ncol(test) >= 2) {
       sep = ","
     } else {
@@ -91,8 +96,6 @@ readFile = function(path, time_format = c()) {
       test = utils::read.csv(file, nrows = 2, sep = ";", header = header)
       if (ncol(test) >= 2) {
         sep = ";"
-      } else {
-        sep = "\t"
       }
     }
 
@@ -123,8 +126,8 @@ readFile = function(path, time_format = c()) {
       qry = "SELECT settingID, settingName, settingValue FROM settings"
       res = queryActigraph(datfile, qry)
       sqlFields = c('deviceserial', 'startdatetime', 'epochlength',
-                     'downloaddatetime', 'batteryvoltage', 'modenumber',
-                     'addresspointer')
+                    'downloaddatetime', 'batteryvoltage', 'modenumber',
+                    'addresspointer')
       sqlValues = res[match(sqlFields, res[,'settingName']), 'settingValue']
       starttime = timeFromYear1(as.numeric(sqlValues[2]), tz = "UTC")
       downtime = timeFromYear1(as.numeric(sqlValues[4]))
