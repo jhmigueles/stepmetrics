@@ -171,8 +171,8 @@ readFile = function(path, time_format = c()) {
                                                                  "%m/%d/%Y %H:%M",
                                                                  "%m/%d/%Y %H:%M:%S"))
     ts = seq(from = ts0, by = 30, length.out = nrow(cleanData))
+    time_format = "%Y-%m-%d %H:%M:%S"
   }
-  print(paste0(file, ": ", as.character(ts[1])))
   cleanData$timestamp = chartime2iso8601(as.character(ts), tz = "", time_format = time_format)
 
   # find steps column -------
