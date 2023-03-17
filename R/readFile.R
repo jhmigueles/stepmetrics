@@ -108,9 +108,39 @@ readFile = function(path, time_format = c()) {
   } else if (format == "agd") {
     data = c()
     for (i in 1:length(AllFiles)) {
-      data_i = PhysicalActivity::readActigraph(AllFiles[i], convertTime = FALSE)
+      data_i = PhysicalActivity::readActigraph(AllFiles[i])
       data = rbind(data, data_i)
     }
+    # fix timestamp -------
+    # Next lines of code are adapted from cran/PhysicalActivity
+    # Here I hardcode the format of the timestamp to ease handling later on
+    agdStartTime = function(datfile) {
+      # extra function for time format
+      timeFromYear1 = function(x, base=62135596800, tz = "UTC") {
+        as.POSIXct(x %/% 1e7 - base, origin = "1970-01-01", tz = tz)
+      }
+      # code start time
+      qry = "SELECT settingID, settingName, settingValue FROM settings"
+      res = queryActigraph(datfile, qry)
+      sqlFields = c('deviceserial', 'startdatetime', 'epochlength',
+                     'downloaddatetime', 'batteryvoltage', 'modenumber',
+                     'addresspointer')
+      sqlValues = res[match(sqlFields, res[,'settingName']), 'settingValue']
+      starttime = timeFromYear1(as.numeric(sqlValues[2]), tz = "UTC")
+      downtime = timeFromYear1(as.numeric(sqlValues[4]))
+      epoch = as.POSIXct("1970-01-01", tz = "") + as.numeric(sqlValues[3])
+      metaKeys = c('Serial TimeStamp', 'Epoch Period (hh:mm:ss)')
+      metaVals = character(length(metaKeys))
+      names(metaVals) = metaKeys
+      metaVals[1] = format(starttime, "%Y-%m-%d %H:%M:%S")
+      metaVals[2] = format(epoch, "%H:%M:%S")
+      return(metaVals)
+    }
+    meta_agd = agdStartTime(AllFiles[i])
+    starttime = as.POSIXlt(meta_agd[1], format = "%Y-%m-%d %H:%M:%S", tz = "")
+    epoch_tmp = as.numeric(unlist(strsplit(meta_agd[2], ":")))
+    epoch = epoch_tmp[1]*(60^2) + epoch_tmp[2]*60 + epoch_tmp[3]
+    data$TimeStamp = seq(starttime, by = epoch, length.out = nrow(data))
   }
 
   # set up object to return ----
