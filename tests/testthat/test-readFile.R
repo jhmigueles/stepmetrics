@@ -68,7 +68,6 @@ test_that("reads and formats data correctly", {
   expect_equal(data5[nrow(data5), 2], data4[nrow(data4), 2])
   expect_equal(data5[nrow(data5), 2], data4[nrow(data4), 2])
 
-
   # semicolon separated csv
   data6 = readFile(file6)
 
@@ -77,5 +76,14 @@ test_that("reads and formats data correctly", {
   expect_equal(data6[1, 2], data5[1, 2])
   expect_equal(data6[nrow(data6), 2], data5[nrow(data5), 2])
   expect_equal(data6[nrow(data6), 2], data5[nrow(data5), 2])
+
+  # GGIR output
+  paths = dir(system.file("testfiles_GGIR//", package = "stepmetrics"), full.names = TRUE)
+  file7 = dir(paths, recursive = TRUE, full.names = TRUE)
+  data7 = readFile(file7)
+
+  expect_equal(dim(data7), c(13635, 2))
+  expect_true(grepl("19:00:00", data7[1, 1],))
+  expect_equal(range(data7[, 2]), c(0, 121))
 
 })

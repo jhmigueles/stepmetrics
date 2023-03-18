@@ -145,6 +145,10 @@ readFile = function(path, time_format = c()) {
     epoch = epoch_tmp[1]*(60^2) + epoch_tmp[2]*60 + epoch_tmp[3]
     data$TimeStamp = seq(starttime, by = epoch, length.out = nrow(data))
     time_format = "%Y-%m-%d %H:%M:%S"
+  } else if (format == "RData") { # then GGIR output
+    IMP = c()
+    load(file)
+    data = IMP$metashort
   }
 
   # set up object to return ----
@@ -176,7 +180,12 @@ readFile = function(path, time_format = c()) {
     ts = seq(from = ts0, by = 30, length.out = nrow(cleanData))
     time_format = "%Y-%m-%d %H:%M:%S"
   }
-  cleanData$timestamp = chartime2iso8601(as.character(ts), tz = "", time_format = time_format)
+
+  if (format != "RData") { # then, no GGIR, we need to reformat timestamp
+    cleanData$timestamp = chartime2iso8601(as.character(ts), tz = "", time_format = time_format)
+  } else {
+    cleanData$timestamp = ts
+  }
 
   # find steps column -------
   steps_tmp = grep("step|value", colnames(data), value = TRUE)

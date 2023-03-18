@@ -10,9 +10,10 @@
 The goal of stepmetrics is to calculate step and cadence metrics from aggregated 
 step values per epoch. At the moment the package works with epochs from 1 to 60 seconds.
 For epochs shorter than 60 seconds, the values are aggregated to 60 seconds prior
-to calculating the step and cadence metrics.
+to calculating the step and cadence metrics. Therefore, for now the epoch length needs
+to be divisible by 60 (i.e., 1, 2, 3, 4, 5, 6, 10, 12, 15, 20, 30 y 60 seconds).
 
-This package has been tested with fitbit and actigraph files at the moment.
+This package has been tested with fitbit, actigraph files, and GGIR output at the moment.
 
 ## Installation
 
@@ -44,4 +45,16 @@ step.metrics(datadir = "C:/mydata/", outputdir = "C:/myoutput/",
 This function does not return any object into the R session. It generates
 day-level and person-level step and cadence metrics and store them in csv files
 in the output directory (as defined with `outputdir`)
+
+## Working with GGIR output?
+
+If you calculated the step count in GGIR with an external function (for example the algorithm by [Verisense](https://github.com/ShimmerEngineering/Verisense-Toolbox/tree/master/Verisense_step_algorithm)), then the `datadir`should be defined as the 
+path to the output directory generated in GGIR (the folder that starts with "output_"
+in the name).
+
+Note that stepmetrics will look for a column that includes "step" in the name, for
+example: steps, step_column, step_count, step_per_epoch would be valid column names.
+When using a external function in GGIR, you can decide on the column name for that
+metric, thus, you need to make sure to meet this requirement.
+
 

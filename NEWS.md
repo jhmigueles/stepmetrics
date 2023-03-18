@@ -2,6 +2,7 @@
 
 (Github-only release date: 2023-??-??)
 -   Expanded functionality to work with ActiGraph csv files.
+-   Expanded functionality to work with GGIR output.
 -   Improved test coverage.
 
 # stepmetrics 0.1.1

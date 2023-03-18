@@ -2,7 +2,7 @@
 #' @description This function loads the minute-based files containing the step counts,
 #'                calculate the step and cadence metrics and store them in day-level and person-level csv files.
 #'
-#' @param datadir Character (no default). Directory where the files containing the steps data are stored, e.g., "C:/mydata/".
+#' @param datadir Character (no default). Directory where the files containing the steps data are stored, e.g., "C:/mydata/". If you are trying to process GGIR output, then this should be the output directory from GGIR (name starts with "output_").
 #' @param outputdir Character (no default). Directory where the output needs to be stored. Note that this function will attempt to create folders in this directory and uses those folder to keep output.
 #' @param cadence_MOD Numeric (default = 100)
 #' @param cadence_VIG Numeric (default = 130)
@@ -34,11 +34,15 @@ step.metrics = function(datadir, outputdir="./",
                         exclude_pk30_0 = TRUE,
                         exclude_pk60_0 = TRUE,
                         time_format = NULL,
-                        verbose = TRUE){
+                        verbose = TRUE) {
+
+  # is GGIR output? -----
+  isGGIR = isGGIRoutput(datadir)
+  if (isGGIR == TRUE) datadir = file.path(datadir, "meta/ms2.out/")
 
   # Files to analyse ----
-  files_fn = dir(datadir, pattern = "*.csv|*.agd", full.names = TRUE)
-  files = dir(datadir, pattern = "*.csv|*.agd")
+  files_fn = dir(datadir, pattern = "*.csv|*.agd|*.RData", full.names = TRUE)
+  files = dir(datadir, pattern = "*.csv|*.agd|*.RData")
 
   # Get IDs -----
   ids = c()

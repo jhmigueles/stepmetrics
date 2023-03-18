@@ -12,4 +12,18 @@ test_that("step.metrics produces output", {
 
   # remove generated files -----
   if (dir.exists("./output")) unlink("./output/", recursive = TRUE)
+
+  # test for GGIR output ----
+  datadir = dir(system.file("testfiles_GGIR", package = "stepmetrics"), full.names = TRUE)
+  step.metrics(datadir = datadir, outputdir = "./output/")
+
+  # tests ----
+  expect_true(dir.exists("./output"))
+  expect_true(dir.exists("./output/daySummary"))
+  expect_equal(length(dir("./output/daySummary")), 1)
+  expect_true(file.exists("./output/personSummary.csv"))
+
+  # remove generated files -----
+  if (dir.exists("./output")) unlink("./output/", recursive = TRUE)
+
 })

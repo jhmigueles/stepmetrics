@@ -3,6 +3,7 @@
 export(define_day_indices)
 export(get_cadence_bands)
 export(get_cadence_peaks)
+export(isGGIRoutput)
 export(readFile)
 export(step.metrics)
 import(PhysicalActivity)
