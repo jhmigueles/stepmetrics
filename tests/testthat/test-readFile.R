@@ -79,8 +79,11 @@ test_that("reads and formats data correctly", {
 
   # GGIR output
   paths = dir(system.file("testfiles_GGIR//", package = "stepmetrics"), full.names = TRUE)
+  file7 = dir(paths, recursive = TRUE, full.names = TRUE)
+  data7 = readFile(file7)
 
-
-
+  expect_equal(dim(data7), c(13635, 2))
+  expect_true(grepl("19:00:00", data7[1, 1],))
+  expect_equal(range(data7[, 2]), c(0, 121))
 
 })

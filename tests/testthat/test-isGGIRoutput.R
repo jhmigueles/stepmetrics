@@ -1,7 +1,7 @@
 test_that("checks if a GGIR output is recognized", {
 
   # It recognizes a GGIR output
-  path = system.file("testfiles_GGIR/output_GGIR/", package = "stepmetrics")
+  path = system.file("testfiles_GGIR/output_test/", package = "stepmetrics")
 
   expect_true(isGGIRoutput(path))
 
