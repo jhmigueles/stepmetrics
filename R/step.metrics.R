@@ -59,7 +59,7 @@ step.metrics = function(datadir, outputdir="./",
 
   #Loop through the files
   for (i in 1:length(ids)) {
-    if (verbose == TRUE) cat(i)
+    if (verbose == TRUE) cat("Processing participant: ", ids[i], " ")
     # read data ----
     files2read = grep(ids[i], files_fn, value = TRUE)
     data = readFile(files2read)
@@ -155,7 +155,7 @@ step.metrics = function(datadir, outputdir="./",
   colnames(output) = names.out.2
   #Loop through files to calculate mean variables
   for (i in 1:length(files)) {
-    if (verbose == TRUE) cat(i)
+    if (verbose == TRUE) cat("Processing participant: ", gsub("_DaySum.csv", "", files[i]), " ")
     D = read.csv(paste0(outputdir,"/daySummary/", files[i]))
     exclude = sum(D$dur_day_min < includedaycrit * 60)
     if (exclude > 0) D = D[-which(D$dur_day_min < includedaycrit * 60),]
@@ -193,5 +193,17 @@ step.metrics = function(datadir, outputdir="./",
     }
   }
 
+  if (verbose == TRUE) {
+    cat('\n')
+    cat(paste0(rep('_', options()$width), collapse = ''))
+    cat("\nStoring output...\n")
+  }
+
   utils::write.csv(output, file = paste0(outputdir,"/personSummary.csv"), row.names = FALSE)
+
+  if (verbose == TRUE) {
+    cat('\n')
+    cat("\nAnalyses complete!\n
+        Your output is stored here: ", outputdir, "\n")
+  }
 }
