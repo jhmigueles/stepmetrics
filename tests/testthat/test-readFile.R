@@ -48,7 +48,7 @@ test_that("reads and formats data correctly", {
   file4 = grep("datatable", paths, value = TRUE)   # with header / timestamp
   file5 = grep("noTS", paths, value = TRUE)        # without header / timestamp
   file6 = grep("semicolon", paths, value = TRUE)        # without header / timestamp
-  file7 = grep("date time", paths, value = TRUE)        # without header / timestamp
+  file7 = grep("date_time", paths, value = TRUE)        # without header / timestamp
 
   # with header / timestamp
   data4 = readFile(file4)
