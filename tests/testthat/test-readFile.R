@@ -48,6 +48,7 @@ test_that("reads and formats data correctly", {
   file4 = grep("datatable", paths, value = TRUE)   # with header / timestamp
   file5 = grep("noTS", paths, value = TRUE)        # without header / timestamp
   file6 = grep("semicolon", paths, value = TRUE)        # without header / timestamp
+  file7 = grep("date time", paths, value = TRUE)        # without header / timestamp
 
   # with header / timestamp
   data4 = readFile(file4)
@@ -77,13 +78,20 @@ test_that("reads and formats data correctly", {
   expect_equal(data6[nrow(data6), 2], data5[nrow(data5), 2])
   expect_equal(data6[nrow(data6), 2], data5[nrow(data5), 2])
 
-  # GGIR output
-  paths = dir(system.file("testfiles_GGIR//", package = "stepmetrics"), full.names = TRUE)
-  file7 = dir(paths, recursive = TRUE, full.names = TRUE)
+  # one-row header and separated date-time
   data7 = readFile(file7)
 
-  expect_equal(dim(data7), c(13635, 2))
-  expect_true(grepl("19:00:00", data7[1, 1],))
-  expect_equal(range(data7[, 2]), c(0, 121))
+  expect_equal(data7$timestamp[1], "2021-07-03T13:48:00+0200")
+  expect_true(min(data7$steps) == 0)
+  expect_true(max(data7$steps) == 132)
+
+  # GGIR output
+  paths = dir(system.file("testfiles_GGIR//", package = "stepmetrics"), full.names = TRUE)
+  file8 = dir(paths, recursive = TRUE, full.names = TRUE)
+  data8 = readFile(file8)
+
+  expect_equal(dim(data8), c(13635, 2))
+  expect_true(grepl("19:00:00", data8[1, 1],))
+  expect_equal(range(data8[, 2]), c(0, 121))
 
 })

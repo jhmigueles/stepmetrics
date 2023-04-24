@@ -21,10 +21,10 @@ readFile = function(path, time_format = c()) {
   # function to handle timestamp format
   chartime2iso8601 = function(x,tz = "", time_format = c()){
     # try formats if not provided
-    tryFormats = c("%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H:%M",
-                   "%d/%m/%Y %H:%M:%S", "%d/%m/%Y %H:%M",
-                   "%Y-%m-%d %H:%M:%OS",
-                   "%m/%d/%Y %H:%M:%S", "%m/%d/%Y %H:%M")
+    tryFormats = c("%Y-%m-%d %I:%M:%S %p", "%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H:%M",
+                   "%m/%d/%Y %I:%M:%S %p", "%m/%d/%Y %H:%M:%S", "%m/%d/%Y %H:%M",
+                   "%d/%m/%Y %I:%M:%S %p", "%d/%m/%Y %H:%M:%S", "%d/%m/%Y %H:%M",
+                   "%Y-%m-%d %H:%M:%OS")
 
     if (is.null(time_format)) {
       POStime = as.POSIXlt(as.numeric(as.POSIXlt(x, tz, tryFormats = tryFormats)), origin = "1970-01-01", tz)
@@ -46,25 +46,46 @@ readFile = function(path, time_format = c()) {
   # check separator for csv
   if (format == "csv") {
     # check separator of csv
-    test = utils::read.csv(file, nrows = 2)
+    skip = tryCatch(
+      {utils::read.csv(file, nrows = 2)
+       skip = 0
+      }, error = function(cond) {
+        utils::read.csv(file, nrows = 2, skip = 1)
+        skip = 1
+      })
+
+    test = utils::read.csv(file, nrows = 2, skip = skip)
 
     # check if it is an ActiGraph file, then it would need to skip 10 rows
-    isActiGraph = any(grepl("ActiGraph", colnames(test)))
+    isActiGraph = FALSE
+    if (skip == 0) {
+      isActiGraph = any(grepl("ActiGraph", colnames(test)))
+    } else if (skip == 1) {
+      expected_columns = c("date", "epoch", "axis1")
+      isActiGraph = all(expected_columns %in% colnames(test))
+    }
 
     # define skip and header for specific formats of actigraph
-    sep = ","; skip = 0; header = TRUE
+    sep = ","; header = TRUE
     column_names = NULL; startdate = NULL; starttime = NULL
 
     if (isActiGraph) {
       # identify startdate and starttime
-      test = utils::read.csv(file, nrows = 9)
+      test = utils::read.csv(file, nrows = 9, skip = skip)
       d0 = grep("start date", test[,1], ignore.case = TRUE)
       t0 = grep("start time", test[,1], ignore.case = TRUE)
       startdate = gsub("start date ", "", test[d0,1], ignore.case = TRUE)
       starttime = gsub("start time ", "", test[t0,1], ignore.case = TRUE)
 
+      # does it have a header to skip?
+      if (length(startdate) > 0) {
+        skip = 10
+      } else {
+        startdate = test[1, "date"]
+        starttime = test[1, "epoch"]
+      }
+
       # redefine skip
-      skip = 10
       test = utils::read.csv(file, nrows = 2, skip = skip, header = header)
 
       # check separator for csv file
@@ -77,7 +98,7 @@ readFile = function(path, time_format = c()) {
       }
 
       # header?
-      if (colnames(test)[1] != "Date") { # no header
+      if (tolower(colnames(test)[1]) != "date") { # no header
         header = FALSE
         test = utils::read.csv(file, nrows = 2, sep = sep, skip = skip, header = header)
         column_names = c("Axis1", "Axis2", "Axis3", "Steps",
@@ -157,7 +178,7 @@ readFile = function(path, time_format = c()) {
 
   # find timestamp column/s -----
   colnames(data) = tolower(colnames(data))
-  timestamp_tmp = grep("date|time", colnames(data), value = TRUE)
+  timestamp_tmp = grep("date|time|epoch", colnames(data), value = TRUE)
   if (length(timestamp_tmp) == 1) {
     ts = data[, timestamp_tmp]
   } else if (length(timestamp_tmp) == 2) {
