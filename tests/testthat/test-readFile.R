@@ -81,7 +81,7 @@ test_that("reads and formats data correctly", {
   # one-row header and separated date-time
   data7 = readFile(file7)
 
-  expect_equal(grepl("2021-07-03T13:48:00", data7$timestamp[1]))
+  expect_true(grepl("2021-07-03T13:48:00", data7$timestamp[1]))
   expect_true(min(data7$steps) == 0)
   expect_true(max(data7$steps) == 132)
 
