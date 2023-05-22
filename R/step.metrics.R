@@ -155,8 +155,9 @@ step.metrics = function(datadir, outputdir="./",
   output = data.frame(matrix(NA, length(files), length(names.out.2)))
   colnames(output) = names.out.2
   #Loop through files to calculate mean variables
+  if (verbose == TRUE) cat("Processing participant: ")
   for (i in 1:length(files)) {
-    if (verbose == TRUE) cat("Processing participant: ", gsub("_DaySum.csv", "", files[i]), " ")
+    if (verbose == TRUE) cat(gsub("_DaySum.csv", "", files[i]), " ")
     D = read.csv(paste0(outputdir,"/daySummary/", files[i]))
     exclude = sum(D$dur_day_min < includedaycrit * 60)
     if (exclude > 0) D = D[-which(D$dur_day_min < includedaycrit * 60),]
