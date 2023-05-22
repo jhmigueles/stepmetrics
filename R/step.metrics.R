@@ -47,7 +47,7 @@ step.metrics = function(datadir, outputdir="./",
   # Get IDs -----
   ids = c()
   for (i in 1:length(files)) {
-    ids[i] = unlist(strsplit(files[i], split = idloc))[1]
+    ids[i] = unlist(strsplit(files[i], split = idloc, fixed = TRUE))[1]
   }
   ids = unique(ids)
 
@@ -58,8 +58,9 @@ step.metrics = function(datadir, outputdir="./",
   }
 
   #Loop through the files
+  if (verbose == TRUE) cat("Processing participant: ")
   for (i in 1:length(ids)) {
-    if (verbose == TRUE) cat("Processing participant: ", ids[i], " ")
+    if (verbose == TRUE) cat(paste0(ids[i], " "))
     # read data ----
     files2read = grep(ids[i], files_fn, value = TRUE)
     data = readFile(files2read)
@@ -154,8 +155,9 @@ step.metrics = function(datadir, outputdir="./",
   output = data.frame(matrix(NA, length(files), length(names.out.2)))
   colnames(output) = names.out.2
   #Loop through files to calculate mean variables
+  if (verbose == TRUE) cat("Processing participant: ")
   for (i in 1:length(files)) {
-    if (verbose == TRUE) cat("Processing participant: ", gsub("_DaySum.csv", "", files[i]), " ")
+    if (verbose == TRUE) cat(gsub("_DaySum.csv", "", files[i]), " ")
     D = read.csv(paste0(outputdir,"/daySummary/", files[i]))
     exclude = sum(D$dur_day_min < includedaycrit * 60)
     if (exclude > 0) D = D[-which(D$dur_day_min < includedaycrit * 60),]
