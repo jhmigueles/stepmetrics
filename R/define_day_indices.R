@@ -12,23 +12,27 @@
 #' }
 define_day_indices = function(ts) {
   mnightsi = grep("00:00:00", ts, fixed = T)
-  day = rep(NA, times = length(ts))
-  d = 1
-  # Loop through the rest of the days
-  for (j in 1:length(mnightsi)) {
-    if (j < length(mnightsi)) {
-      if (j == 1 & mnightsi[j] > 1) {
-        day[1:mnightsi[j]] = d
-      } else if (j == 1 & mnightsi[j] == 1) {
-        next()
+  if (length(mnightsi) > 0) {
+    day = rep(NA, times = length(ts))
+    d = 1
+    # Loop through the rest of the days
+    for (j in 1:length(mnightsi)) {
+      if (j < length(mnightsi)) {
+        if (j == 1 & mnightsi[j] > 1) {
+          day[1:mnightsi[j]] = d
+        } else if (j == 1 & mnightsi[j] == 1) {
+          next()
+        } else {
+          day[mnightsi[j - 1]:mnightsi[j]] = d
+        }
+        d = d + 1
       } else {
-        day[mnightsi[j - 1]:mnightsi[j]] = d
+        day[mnightsi[j - 1]:mnightsi[j]] = d; d = d + 1
+        day[mnightsi[j]:length(day)] = d
       }
-      d = d + 1
-    } else {
-      day[mnightsi[j - 1]:mnightsi[j]] = d; d = d + 1
-      day[mnightsi[j]:length(day)] = d
     }
+  } else { # less of 1 day of data
+   day = rep(1, length(ts))
   }
   return(day)
 }
