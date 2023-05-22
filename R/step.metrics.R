@@ -58,8 +58,9 @@ step.metrics = function(datadir, outputdir="./",
   }
 
   #Loop through the files
+  if (verbose == TRUE) cat("Processing participant: ")
   for (i in 1:length(ids)) {
-    if (verbose == TRUE) cat("Processing participant: ", ids[i], " ")
+    if (verbose == TRUE) cat(paste0(ids[i], " "))
     # read data ----
     files2read = grep(ids[i], files_fn, value = TRUE)
     data = readFile(files2read)
