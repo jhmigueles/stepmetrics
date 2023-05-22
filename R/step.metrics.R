@@ -47,7 +47,7 @@ step.metrics = function(datadir, outputdir="./",
   # Get IDs -----
   ids = c()
   for (i in 1:length(files)) {
-    ids[i] = unlist(strsplit(files[i], split = idloc))[1]
+    ids[i] = unlist(strsplit(files[i], split = idloc, fixed = TRUE))[1]
   }
   ids = unique(ids)
 
