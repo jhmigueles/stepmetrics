@@ -183,11 +183,11 @@ readFile = function(path, time_format = c()) {
     ts = data[, timestamp_tmp]
   } else if (length(timestamp_tmp) == 2) {
     # date and time separated: colon split should return a vector of
-    # length 1 for date and length 3 for time
+    # length 1 for date and length 3 for time (or 2 if seconds are not stored)
     colonSplit1 = length(unlist(strsplit(data[1, timestamp_tmp[1]], split = ":")))
     colonSplit2 = length(unlist(strsplit(data[1, timestamp_tmp[2]], split = ":")))
     date_column = timestamp_tmp[which(c(colonSplit1, colonSplit2) == 1)]
-    time_column = timestamp_tmp[which(c(colonSplit1, colonSplit2) == 3)]
+    time_column = timestamp_tmp[which(c(colonSplit1, colonSplit2) > 1)]
     # define timestamp
     ts = paste(data[, date_column], data[, time_column])
   } else if (length(timestamp_tmp) == 0) {
