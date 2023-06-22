@@ -63,7 +63,7 @@ step.metrics = function(datadir, outputdir="./",
     if (verbose == TRUE) cat(paste0(ids[i], " "))
     # read data ----
     files2read = grep(ids[i], files_fn, value = TRUE)
-    data = readFile(files2read)
+    data = readFile(files2read, time_format = time_format)
 
     # create vector with day indices -----
     day = define_day_indices(data$timestamp)
