@@ -24,7 +24,7 @@ readFile = function(path, time_format = c()) {
     tryFormats = c("%Y-%m-%d %I:%M:%S %p", "%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H:%M",
                    "%m/%d/%Y %I:%M:%S %p", "%m/%d/%Y %H:%M:%S", "%m/%d/%Y %H:%M",
                    "%d/%m/%Y %I:%M:%S %p", "%d/%m/%Y %H:%M:%S", "%d/%m/%Y %H:%M",
-                   "%Y-%m-%d %H:%M:%OS")
+                   "%Y-%m-%d %H:%M:%OS", "%d-%m-%Y %H:%M:%OS")
 
     if (is.null(time_format)) {
       POStime = as.POSIXlt(as.numeric(as.POSIXlt(x, tz, tryFormats = tryFormats)), origin = "1970-01-01", tz)
