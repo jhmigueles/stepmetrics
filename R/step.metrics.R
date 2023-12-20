@@ -84,6 +84,18 @@ step.metrics = function(datadir, outputdir="./",
       if (di == 1) record.min = c()
       record.min[di] = length(data[which(day == di),"steps"])
 
+      # if GGIR, import wear time
+      if (di == 1) wear.min = c()
+      wear.min[di] = NA
+      if (isGGIR == TRUE) {
+        if (di == 1) {
+          GGIRreports = dir(gsub("meta/ms2.out", "results/", datadir), full.names = TRUE)
+          p2file = grep("part2_daysummary.csv", GGIRreports, value = TRUE)
+          p2 = utils::read.csv(p2file)
+        }
+        GGIRrow = which(p2$ID == id & substr(p2$calendar_date, 1, 10) == date[di])
+        wear.min[di] = p2[GGIRrow, "N.valid.hours"]*60
+      }
       #Steps/day
       if (di == 1) stepsperday = c()
       stepsperday[di] = sum(data[which(day == di),"steps"])
@@ -108,7 +120,9 @@ step.metrics = function(datadir, outputdir="./",
     }
 
     ##OUTPUT PER DAY
-    names.out = c("ID", "date", "weekday", "weekday_num", "dur_day_min", "threshold_MOD_spm", "threshold_VIG_spm",
+    names.out = c("ID", "date", "weekday", "weekday_num",
+                  "dur_day_min", "dur_wear_min",
+                  "threshold_MOD_spm", "threshold_VIG_spm",
                   "stepsperday", CAD_peaks[[1]]$names, CAD_bands[[1]]$names,
                   "MPA_min","VPA_min","MVPA_min")
 
@@ -119,6 +133,7 @@ step.metrics = function(datadir, outputdir="./",
     daily.out[,fi] = id; fi = fi + 1
     daily.out[,fi:(fi + 2)] = cbind(date, wday, as.numeric(wday_num)); fi = fi + 3
     daily.out[,fi] = record.min; fi = fi + 1
+    daily.out[,fi] = wear.min; fi = fi + 1
     daily.out[,fi:(fi + 1)] = cbind(rep(cadence_MOD, times = nrow(daily.out)), rep(cadence_VIG, times = nrow(daily.out))); fi = fi + 2
     daily.out[,fi:ncol(daily.out)] = cbind(stepsperday, CAD_peaks_spm, CAD_bands_spm, MPA, VPA, MVPA)
     # Create output directory
@@ -159,8 +174,13 @@ step.metrics = function(datadir, outputdir="./",
   for (i in 1:length(files)) {
     if (verbose == TRUE) cat(gsub("_DaySum.csv", "", files[i]), " ")
     D = read.csv(paste0(outputdir,"/daySummary/", files[i]))
-    exclude = sum(D$dur_day_min < includedaycrit * 60)
-    if (exclude > 0) D = D[-which(D$dur_day_min < includedaycrit * 60),]
+    if (isGGIR == TRUE) {
+      exclude = sum(D$dur_wear_min < includedaycrit * 60)
+      if (exclude > 0) D = D[-which(D$dur_wear_min < includedaycrit * 60),]
+    } else {
+      exclude = sum(D$dur_day_min < includedaycrit * 60)
+      if (exclude > 0) D = D[-which(D$dur_day_min < includedaycrit * 60),]
+    }
     if (exclude_pk30_0 == TRUE) {
       zeroes = sum(D$CAD_nZeroes_pk30 > 0)
       if (zeroes > 0) D = D[-which(D$CAD_nZeroes_pk30 > 0),]
