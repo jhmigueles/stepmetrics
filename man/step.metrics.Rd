@@ -13,6 +13,8 @@ step.metrics(
   cadence_MOD = 100,
   cadence_VIG = 130,
   includedaycrit = 10,
+  includeawakecrit = NULL,
+  includedaylengthcrit = 23,
   exclude_pk30_0 = TRUE,
   exclude_pk60_0 = TRUE,
   time_format = NULL,
@@ -35,6 +37,10 @@ step.metrics(
 \item{cadence_VIG}{Numeric (default = 130)}
 
 \item{includedaycrit}{Numeric (default = 10)}
+
+\item{includeawakecrit}{Numeric (default = NULL). Only use this if part 5 reports are available.}
+
+\item{includedaylengthcrit}{Numeric (default = 23). Only use this if part 5 reports are available.}
 
 \item{exclude_pk30_0}{Logical (default = TRUE)}
 
