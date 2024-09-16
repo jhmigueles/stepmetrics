@@ -24,7 +24,7 @@ readFile = function(path, time_format = c()) {
     tryFormats = c("%Y-%m-%d %I:%M:%S %p", "%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H:%M",
                    "%m/%d/%Y %I:%M:%S %p", "%m/%d/%Y %H:%M:%S", "%m/%d/%Y %H:%M",
                    "%d/%m/%Y %I:%M:%S %p", "%d/%m/%Y %H:%M:%S", "%d/%m/%Y %H:%M",
-                   "%Y-%m-%d %H:%M:%OS")
+                   "%Y-%m-%d %H:%M:%OS", "%d-%m-%Y %H:%M:%OS")
 
     if (is.null(time_format)) {
       POStime = as.POSIXlt(as.numeric(as.POSIXlt(x, tz, tryFormats = tryFormats)), origin = "1970-01-01", tz)
@@ -183,11 +183,11 @@ readFile = function(path, time_format = c()) {
     ts = data[, timestamp_tmp]
   } else if (length(timestamp_tmp) == 2) {
     # date and time separated: colon split should return a vector of
-    # length 1 for date and length 3 for time
+    # length 1 for date and length 3 for time (or 2 if seconds are not stored)
     colonSplit1 = length(unlist(strsplit(data[1, timestamp_tmp[1]], split = ":")))
     colonSplit2 = length(unlist(strsplit(data[1, timestamp_tmp[2]], split = ":")))
     date_column = timestamp_tmp[which(c(colonSplit1, colonSplit2) == 1)]
-    time_column = timestamp_tmp[which(c(colonSplit1, colonSplit2) == 3)]
+    time_column = timestamp_tmp[which(c(colonSplit1, colonSplit2) > 1)]
     # define timestamp
     ts = paste(data[, date_column], data[, time_column])
   } else if (length(timestamp_tmp) == 0) {
