@@ -1,7 +1,6 @@
 # stepmetrics 0.1.3
 
 (Github-only release date: 2025-XX-XX)
--   Update column names recognition from GGIR output.
 -   Update IDs definition removing .RData to match current GGIR versions.
 
 
