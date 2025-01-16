@@ -54,6 +54,7 @@ step.metrics = function(datadir, outputdir="./",
     ids[i] = unlist(strsplit(files[i], split = idloc, fixed = TRUE))[1]
   }
   ids = unique(ids)
+  ids = gsub(".RData$", "", ids)
 
   if (verbose == TRUE) {
     cat('\n')
