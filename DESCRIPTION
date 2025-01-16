@@ -1,14 +1,14 @@
 Package: stepmetrics
 Type: Package
 Title: Calculate Step and Cadence Metrics
-Version: 0.1.2
+Version: 0.1.3
 Author: Jairo Hidalgo Migueles
-Maintainer: Jairo Hidalgo Migueles <jairo.hidalgo.migueles@gmail.com>
+Maintainer: Jairo Hidalgo Migueles <jairo@jhmigueles.com>
 Description: Package to calculate step and cadence metrics from timestamped accelerometer data.
 License: AGPL (>= 3)
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 Imports: PhysicalActivity, RSQLite, tools, stats, utils
 Suggests: 
     testthat (>= 3.0.0)

@@ -1,3 +1,9 @@
+# stepmetrics 0.1.3
+
+(Github-only release date: 2025-XX-XX)
+-   Update column names recognition from GGIR output.
+
+
 # stepmetrics 0.1.2
 
 (Github-only release date: 2023-04-24)

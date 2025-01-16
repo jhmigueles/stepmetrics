@@ -101,7 +101,7 @@ step.metrics = function(datadir, outputdir="./",
           if (!is.na(p5file)) p5 = utils::read.csv(p5file)
         }
         GGIRrow = which(p2$ID == id & substr(p2$calendar_date, 1, 10) == date[di])
-        wear.min[di] = p2[GGIRrow, "N.valid.hours"]*60
+        wear.min[di] = p2[GGIRrow, "N valid hours"]*60
         GGIRrow = which(p5$ID == id & substr(p5$calendar_date, 1, 10) == date[di])
         if (length(GGIRrow) > 0) {
           wear.awake.perc[di] = (100 - p5[GGIRrow, "nonwear_perc_day"]) / 100
