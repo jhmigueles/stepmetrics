@@ -94,18 +94,22 @@ step.metrics = function(datadir, outputdir="./",
       wear.min[di] = wear.awake.perc[di] = NA
       if (isGGIR == TRUE) {
         if (di == 1) {
-          GGIRreports = dir(gsub("meta/ms2.out", "results/", datadir), recursive = T, full.names = TRUE)
-          p2file = grep("part2_daysummary.csv", GGIRreports, value = TRUE)
-          p5file = grep("QC/part5_daysummary_full_MM", GGIRreports, value = TRUE)[1]
           p2 = p5 = NULL
-          p2 = utils::read.csv(p2file)
-          if (!is.na(p5file)) p5 = utils::read.csv(p5file)
+          SUM = NULL
+          load(files2read)
+          p2 = SUM$daysummary
+          if (dir.exists(gsub("ms2.out", "ms5.out", files2read))) {
+            output = NULL
+            load(dir.exists(gsub("ms2.out", "ms5.out", files2read)))
+            p5 = output
+          }
         }
         GGIRrow = which(p2$ID == id & substr(p2$calendar_date, 1, 10) == date[di])
-        wear.min[di] = p2[GGIRrow, "N.valid.hours"]*60
+        nValidHoursCol = grep("valid.hours|valid hours", colnames(p2), value = T)
+        wear.min[di] = as.numeric(p2[GGIRrow, nValidHoursCol])*60
         GGIRrow = which(p5$ID == id & substr(p5$calendar_date, 1, 10) == date[di])
         if (length(GGIRrow) > 0) {
-          wear.awake.perc[di] = (100 - p5[GGIRrow, "nonwear_perc_day"]) / 100
+          wear.awake.perc[di] = (100 - as.numeric(p5[GGIRrow, "nonwear_perc_day"])) / 100
         }
       }
       #Steps/day

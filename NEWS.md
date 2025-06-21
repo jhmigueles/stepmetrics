@@ -2,7 +2,8 @@
 
 (Github-only release date: 2025-XX-XX)
 -   Update IDs definition removing .RData to match current GGIR versions.
-
+-   Improve peak cadence test.
+-   Improve extraction of wear time when using GGIR-processed data.
 
 # stepmetrics 0.1.2
 
