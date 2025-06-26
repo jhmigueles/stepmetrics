@@ -2,22 +2,16 @@
 % Please edit documentation in R/define_day_indices.R
 \name{define_day_indices}
 \alias{define_day_indices}
-\title{Define day indices from timestamp}
+\title{Define day indices from ISO 8601 timestamps}
 \usage{
 define_day_indices(ts)
 }
 \arguments{
-\item{ts}{Character (no default) with timestamps from data.}
+\item{ts}{Character vector of ISO 8601 timestamps (e.g., "2024-06-26T23:45:00+0100")}
 }
 \value{
 Numeric vector with day indices
 }
 \description{
-Define day indices from timestamp
-}
-\examples{
-\dontrun{
-data = readFile("mydata/s01_fitbit.csv")
-define_day_indices(data$timestamp)
-}
+Define day indices from ISO 8601 timestamps
 }

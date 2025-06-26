@@ -4,6 +4,7 @@
 -   Update IDs definition removing .RData to match current GGIR versions.
 -   Improve peak cadence test.
 -   Improve extraction of wear time when using GGIR-processed data.
+-   Improve identification of day indices when there are time gaps. #17
 
 # stepmetrics 0.1.2
 
