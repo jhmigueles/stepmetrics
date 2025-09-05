@@ -2,29 +2,39 @@ citHeader("To cite stepmetrics in publications, please use:")
 
 vers <- meta$Version
 year <- local({
-  y <- NULL
   if (!is.null(meta[["Date/Publication"]])) {
-    # e.g. "2025-09-05 12:34:56 UTC"
-    y <- as.POSIXlt(meta[["Date/Publication"]], tz = "UTC")$year + 1900
+    as.character(as.POSIXlt(meta[["Date/Publication"]], tz = "UTC")$year + 1900)
   } else if (!is.null(meta$Date)) {
-    # e.g. "2025-09-01"
-    y <- as.POSIXlt(meta$Date, tz = "UTC")$year + 1900
+    as.character(as.POSIXlt(meta$Date, tz = "UTC")$year + 1900)
   } else if (!is.null(meta$Packaged)) {
-    # e.g. "2025-09-05 12:34:56 UTC; your.name@domain.com"
     pkgd <- sub(" .*", "", meta$Packaged)
-    y <- as.POSIXlt(pkgd, tz = "UTC")$year + 1900
+    as.character(as.POSIXlt(pkgd, tz = "UTC")$year + 1900)
   } else {
-    y <- as.integer(format(Sys.Date(), "%Y"))
+    format(Sys.Date(), "%Y")
   }
-  as.character(y)
 })
 
-citEntry(
-  entry    = "Manual",
+doi <- "10.5281/zenodo.7858094"
+
+bib <- bibentry(
+  bibtype  = "Manual",
   title    = "stepmetrics: Calculate Step and Cadence Metrics from Wearable Data",
-  author   = "Jairo Hidalgo Migueles",
+  author   = person(given = "Jairo H", family = "Migueles",
+                    email = "jairo@jhmigueles.com", role = c("aut", "cre")),
   year     = year,
   note     = paste("R package version", vers),
-  url      = "https://CRAN.R-project.org/package=stepmetrics",
-  doi      = "10.5281/zenodo.7858094"
+  url      = "https://github.com/jhmigueles/stepmetrics"
 )
+
+# Add DOI if present
+if (!is.null(doi) && nzchar(doi)) {
+  bib$doi <- doi
+}
+
+# Add a human-readable text version
+bib$textVersion <- sprintf(
+  "Migueles JH (%s). stepmetrics: Calculate Step and Cadence Metrics from Wearable Data. R package version %s. Available at https://github.com/jhmigueles/stepmetrics%s",
+  year, vers, if (!is.null(doi) && nzchar(doi)) paste0(". doi:", doi) else ""
+)
+
+bib

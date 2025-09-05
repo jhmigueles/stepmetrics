@@ -25,7 +25,7 @@
 #' @return A \code{data.frame} with two columns:
 #' \describe{
 #'   \item{\code{timestamp}}{Character vector of ISO-8601 datetimes
-#'     (\code{"YYYY-MM-DDTHH:MM:SS±ZZZZ"}) for CSV/AGD inputs. For GGIR
+#'     (\code{"YYYY-MM-DDTHH:MM:SS(+/-)ZZZZ"}) for CSV/AGD inputs. For GGIR
 #'     \code{RData} inputs, timestamps are carried through as present in
 #'     \code{IMP$metashort}.}
 #'   \item{\code{steps}}{Numeric vector of steps per minute. If the source

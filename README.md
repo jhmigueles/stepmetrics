@@ -2,13 +2,13 @@
 
 <!-- badges: start -->
 
-[![CRAN status](https://www.r-pkg.org/badges/version/stepmetrics)](https://CRAN.R-project.org/package=stepmetrics)
+[![CRAN status](https://www.r-pkg.org/badges/version/stepmetrics)](https://github.com/jhmigueles/stepmetrics)
 [![R-CMD-check_standard](https://github.com/jhmigueles/stepmetrics/actions/workflows/R-CMD-check_standard.yaml/badge.svg)](https://github.com/jhmigueles/stepmetrics/actions/workflows/R-CMD-check_standard.yaml)
 [![Codecov test
 coverage](https://codecov.io/gh/jhmigueles/stepmetrics/branch/master/graph/badge.svg)](https://app.codecov.io/gh/jhmigueles/stepmetrics?branch=master)
 [![DOI](https://zenodo.org/badge/613043353.svg)](https://zenodo.org/badge/latestdoi/613043353)
-[![CRAN downloads](https://cranlogs.r-pkg.org/badges/last-month/stepmetrics)](https://CRAN.R-project.org/package=stepmetrics)
-[![CRAN downloads total](https://cranlogs.r-pkg.org/badges/grand-total/stepmetrics)](https://CRAN.R-project.org/package=stepmetrics)
+[![CRAN downloads](https://cranlogs.r-pkg.org/badges/last-month/stepmetrics)](https://cranlogs.r-pkg.org/)
+[![CRAN downloads total](https://cranlogs.r-pkg.org/badges/grand-total/stepmetrics)](https://cranlogs.r-pkg.org/)
 
 
 <!-- badges: end -->
@@ -98,7 +98,7 @@ algorithm such as Verisense):
     begins with `"output_"`).
 
 -   The function will automatically detect and validate whether it’s a
-    GGIR output folder using [`isGGIRoutput()`](reference).
+    GGIR output folder.
 
 **Important:** stepmetrics looks for a column with `"step"` in its name.
 Valid examples:
