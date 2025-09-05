@@ -14,6 +14,8 @@
 #' @param cadence_bands Numeric (default = c(0, 1, 20, 40, 60, 80, 100, 120, Inf)). Cadence bands to calculate the time accumulated into.
 #' @param cadence_peaks Numeric (default = c(1, 30, 60)). Cadence peaks to calculate.
 #' @param verbose logical (default = TRUE). Whether to print progress messages in the console.
+#' @param includeawakecrit Numeric (default = NULL). Only use this if part 5 reports are available.
+#' @param includedaylengthcrit Numeric (default = 23). Only use this if part 5 reports are available.
 #'
 #' @return This function does not return any object. It stores csv files with the
 #'          day-level and person-level data in the output directory.
@@ -31,6 +33,8 @@ step.metrics = function(datadir, outputdir="./",
                         cadence_MOD = 100,
                         cadence_VIG = 130,
                         includedaycrit = 10,
+                        includeawakecrit = NULL,
+                        includedaylengthcrit = 23,
                         exclude_pk30_0 = TRUE,
                         exclude_pk60_0 = TRUE,
                         time_format = NULL,
@@ -50,6 +54,7 @@ step.metrics = function(datadir, outputdir="./",
     ids[i] = unlist(strsplit(files[i], split = idloc, fixed = TRUE))[1]
   }
   ids = unique(ids)
+  ids = gsub(".RData$", "", ids)
 
   if (verbose == TRUE) {
     cat('\n')
@@ -84,6 +89,29 @@ step.metrics = function(datadir, outputdir="./",
       if (di == 1) record.min = c()
       record.min[di] = length(data[which(day == di),"steps"])
 
+      # if GGIR, import wear time
+      if (di == 1) wear.min = wear.awake.perc = c()
+      wear.min[di] = wear.awake.perc[di] = NA
+      if (isGGIR == TRUE) {
+        if (di == 1) {
+          p2 = p5 = NULL
+          SUM = NULL
+          load(files2read)
+          p2 = SUM$daysummary
+          if (dir.exists(gsub("ms2.out", "ms5.out", files2read))) {
+            output = NULL
+            load(dir.exists(gsub("ms2.out", "ms5.out", files2read)))
+            p5 = output
+          }
+        }
+        GGIRrow = which(p2$ID == id & substr(p2$calendar_date, 1, 10) == date[di])
+        nValidHoursCol = grep("valid.hours|valid hours", colnames(p2), value = T)
+        wear.min[di] = as.numeric(p2[GGIRrow, nValidHoursCol])*60
+        GGIRrow = which(p5$ID == id & substr(p5$calendar_date, 1, 10) == date[di])
+        if (length(GGIRrow) > 0) {
+          wear.awake.perc[di] = (100 - as.numeric(p5[GGIRrow, "nonwear_perc_day"])) / 100
+        }
+      }
       #Steps/day
       if (di == 1) stepsperday = c()
       stepsperday[di] = sum(data[which(day == di),"steps"])
@@ -108,7 +136,9 @@ step.metrics = function(datadir, outputdir="./",
     }
 
     ##OUTPUT PER DAY
-    names.out = c("ID", "date", "weekday", "weekday_num", "dur_day_min", "threshold_MOD_spm", "threshold_VIG_spm",
+    names.out = c("ID", "date", "weekday", "weekday_num",
+                  "dur_day_min", "dur_wear_min", "dur_awake_perc",
+                  "threshold_MOD_spm", "threshold_VIG_spm",
                   "stepsperday", CAD_peaks[[1]]$names, CAD_bands[[1]]$names,
                   "MPA_min","VPA_min","MVPA_min")
 
@@ -119,6 +149,8 @@ step.metrics = function(datadir, outputdir="./",
     daily.out[,fi] = id; fi = fi + 1
     daily.out[,fi:(fi + 2)] = cbind(date, wday, as.numeric(wday_num)); fi = fi + 3
     daily.out[,fi] = record.min; fi = fi + 1
+    daily.out[,fi] = wear.min; fi = fi + 1
+    daily.out[,fi] = wear.awake.perc; fi = fi + 1
     daily.out[,fi:(fi + 1)] = cbind(rep(cadence_MOD, times = nrow(daily.out)), rep(cadence_VIG, times = nrow(daily.out))); fi = fi + 2
     daily.out[,fi:ncol(daily.out)] = cbind(stepsperday, CAD_peaks_spm, CAD_bands_spm, MPA, VPA, MVPA)
     # Create output directory
@@ -159,8 +191,18 @@ step.metrics = function(datadir, outputdir="./",
   for (i in 1:length(files)) {
     if (verbose == TRUE) cat(gsub("_DaySum.csv", "", files[i]), " ")
     D = read.csv(paste0(outputdir,"/daySummary/", files[i]))
-    exclude = sum(D$dur_day_min < includedaycrit * 60)
-    if (exclude > 0) D = D[-which(D$dur_day_min < includedaycrit * 60),]
+    if (isGGIR == TRUE) {
+      if (is.null(includeawakecrit)) {
+        exclude = sum(D$dur_wear_min < includedaycrit * 60)
+        if (exclude > 0) D = D[-which(D$dur_wear_min < includedaycrit * 60),]
+      } else {
+        exclude = sum(D$dur_awake_perc < includeawakecrit, na.rm = TRUE) + sum(is.na(D$dur_awake_perc)) + sum(D$dur_day_min < includedaylengthcrit*60)
+        if (exclude > 0) D = D[-which(D$dur_awake_perc < includeawakecrit | is.na(D$dur_awake_perc) | D$dur_day_min < includedaylengthcrit*60),]
+      }
+    } else {
+      exclude = sum(D$dur_day_min < includedaycrit * 60)
+      if (exclude > 0) D = D[-which(D$dur_day_min < includedaycrit * 60),]
+    }
     if (exclude_pk30_0 == TRUE) {
       zeroes = sum(D$CAD_nZeroes_pk30 > 0)
       if (zeroes > 0) D = D[-which(D$CAD_nZeroes_pk30 > 0),]

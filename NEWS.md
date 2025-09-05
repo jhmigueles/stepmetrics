@@ -1,7 +1,11 @@
 # stepmetrics 0.1.3
 
-(Github-only release date: 2023-?-?)
--   Improved flexibility to handle time stamps.
+(Github-only release date: 2025-09-05)
+-   Update IDs definition removing .RData to match current GGIR versions.
+-   Improve peak cadence test.
+-   Improve extraction of wear time when using GGIR-processed data.
+-   Improve identification of day indices when there are time gaps. #17
+-   Improved flexibility to handle Fitbit time stamps. #13
 
 # stepmetrics 0.1.2
 
