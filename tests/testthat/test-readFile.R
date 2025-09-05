@@ -1,4 +1,5 @@
 test_that("reads and formats data correctly", {
+  testthat::skip_if_not_installed("RSQLite")
 
   # function to check if is ISO8601
   # https://github.com/wadpac/GGIR/blob/master/R/is.ISO8601.R

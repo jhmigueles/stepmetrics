@@ -1,3 +1,16 @@
+# stepmetrics 1.0.0
+
+(CRAN release date: 2025-09-05)
+
+- Added steps as well as minutes in cadence bands (`get_cadence_bands()`).
+- Added MPA, VPA, and MVPA step counts (`*_steps` variables).
+- Improved documentation across all core functions.
+- Expand README with further details on the package and new badges.
+- Updated DESCRIPTION (authors, funding, URLs, license).
+- test-readFile now is skipped if package `RSQLite` is missing.
+- First CRAN release of **stepmetrics**.
+
+
 # stepmetrics 0.1.3
 
 (Github-only release date: 2025-09-05)

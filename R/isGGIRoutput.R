@@ -1,14 +1,45 @@
-#' Checks whether a directory is a GGIR output directory
+#' Check if a directory is a valid GGIR output folder for stepmetrics
 #'
-#' @param path Character (no default). Directory to test if it is a GGIR output directory
+#' @description
+#' Determines whether a given directory corresponds to a valid GGIR output
+#' directory that can be used with \pkg{stepmetrics}. Several conditions
+#' are checked in sequence:
+#' \enumerate{
+#'   \item Path exists and is a directory.
+#'   \item Directory name begins with `"output_"`.
+#'   \item Contains a `meta/` subfolder.
+#'   \item Contains a `meta/ms2.out/` subfolder (GGIR part 2 milestone data).
+#'   \item Contains at least one `*.RData` file in `ms2.out`.
+#'   \item The loaded object \code{IMP$metashort} includes a step column
+#'         (with `"step"` in its name).
+#' }
 #'
-#' @return Boolean: TRUE means it is GGIR output.
-#' @export
+#' If any of these checks fail, the function returns \code{FALSE} and issues a
+#' warning describing the missing requirement.
+#'
+#' @param path Character. Path to the directory to be tested.
+#'
+#' @return Logical scalar. Returns \code{TRUE} if the directory appears to be
+#'   valid GGIR output suitable for stepmetrics, otherwise \code{FALSE}.
+#'
+#' @note
+#' - A warning is issued if the directory looks like GGIR output but is missing
+#'   required parts (e.g., part 2 milestone data or step counts in
+#'   \code{IMP$metashort}).
+#' - This function loads the first available RData file in
+#'   \code{meta/ms2.out/} to verify the presence of step counts.
 #'
 #' @examples
 #' \dontrun{
+#' # Typical GGIR output folder
 #' isGGIRoutput("C:/mystudy/output_GGIR/")
+#'
+#' # Non-GGIR directory
+#' isGGIRoutput("C:/mystudy/rawdata/")
 #' }
+#'
+#' @seealso [step.metrics()]
+#' @export
 isGGIRoutput = function(path) {
 
   # 1 - path is a directory

@@ -1,15 +1,33 @@
 Package: stepmetrics
 Type: Package
-Title: Calculate Step and Cadence Metrics
-Version: 0.1.3
-Author: Jairo Hidalgo Migueles
-Maintainer: Jairo Hidalgo Migueles <jairo@jhmigueles.com>
-Description: Package to calculate step and cadence metrics from timestamped accelerometer data.
+Title: Calculate Step and Cadence Metrics from Wearable Data
+Version: 1.0.0
+Authors@R: c(
+    person("Jairo H", "Migueles", 
+           email = "jairo@jhmigueles.com", 
+           role = c("aut", "cre")),
+    person("Elroy J", "Aguiar", role = "fnd", 
+           comment = "Funding and data support"),
+    person("University of Alabama", "", role = "fnd"))
+Description: Provides functions to calculate step and cadence metrics from 
+    timestamped accelerometer and wearable device data. Supports CSV, AGD, and 
+    GGIR output formats, with automatic handling of epoch lengths from 1 to 
+    60 seconds. Metrics include total steps, cadence peaks, minutes and steps 
+    in predefined cadence bands, and time and steps in moderate-to-vigorous 
+    physical activity (MVPA). Outputs include both daily- and person-level 
+    summary datasets in CSV format.
 License: AGPL (>= 3)
+Depends: R (>= 3.5.0)
 Encoding: UTF-8
-LazyData: true
 RoxygenNote: 7.3.2
-Imports: PhysicalActivity, RSQLite, tools, stats, utils
+Imports: 
+    PhysicalActivity,
+    tools,
+    stats,
+    utils
 Suggests: 
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    RSQLite
 Config/testthat/edition: 3
+URL: https://github.com/jhmigueles/stepmetrics
+BugReports: https://github.com/jhmigueles/stepmetrics/issues

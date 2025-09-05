@@ -2,23 +2,42 @@
 % Please edit documentation in R/get_cadence_bands.R
 \name{get_cadence_bands}
 \alias{get_cadence_bands}
-\title{Function to calculate cadence bands}
+\title{Calculate minutes and steps spent in cadence bands}
 \usage{
 get_cadence_bands(x, bands = c(0, 1, 20, 40, 60, 80, 100, 120, Inf))
 }
 \arguments{
-\item{x}{Numeric vector (no default) with cadence data for the day of interest.}
+\item{x}{Numeric vector of cadence values (steps per minute), where each
+element represents one minute of the day.}
 
-\item{bands}{Numeric vector (default = c(0, 1, 20, 40, 60, 80, 100, 120, Inf)) with the bands of interest to calculate.}
+\item{bands}{Numeric vector of break points that define the cadence bands.
+Defaults to \code{c(0, 1, 20, 40, 60, 80, 100, 120, Inf)}, which produces
+the bands 0, 1–19, 20–39, 40–59, 60–79, 80–99, 100–119, and ≥120 spm.}
 }
 \value{
-Cadence bands and names of variables.
+A list with three elements:
+\describe{
+  \item{minutes}{Named numeric vector with minutes spent in each band.}
+  \item{steps}{Named numeric vector with steps accumulated in each band.}
+  \item{names}{Character vector of variable names in the format
+  \code{"CAD_band_<lower>_<upper>_spm"}.}
+}
 }
 \description{
-Function to calculate cadence bands
+Splits a minute-based vector of cadence values (steps per minute) into
+predefined bands and reports both:
+\itemize{
+  \item the number of minutes spent in each band
+  \item the number of steps accumulated in each band
+}
 }
 \examples{
-\dontrun{
-get_cadence_bands(x, peaks = c(1, 30, 60))
-}
+# Simulate 1 day of cadence values (1440 minutes)
+set.seed(123)
+cad <- sample(0:150, size = 1440, replace = TRUE)
+
+out <- get_cadence_bands(cad)
+out$minutes  # minutes in each band
+out$steps    # steps in each band
+
 }
