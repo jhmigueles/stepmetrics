@@ -124,23 +124,33 @@ step.metrics = function(datadir, outputdir="./",
 
       #Cadence band levels
       if (di == 1) CAD_bands = list()
-      if (di == 1) CAD_bands_spm = c()
-      CAD_bands[[di]] = get_cadence_bands(x = data[which(day == di),"steps"], bands = cadence_bands)
-      CAD_bands_spm = rbind(CAD_bands_spm, CAD_bands[[di]]$values)
+      if (di == 1) CAD_bands_spm_min = CAD_bands_spm_steps = c()
+      CAD_bands[[di]] = get_cadence_bands(x = data[which(day == di),"steps"],
+                                          bands = cadence_bands)
+      CAD_bands_spm_min = rbind(CAD_bands_spm_min, CAD_bands[[di]]$minutes)
+      CAD_bands_spm_steps = rbind(CAD_bands_spm_steps, CAD_bands[[di]]$steps)
 
       #MPA, VPA, MVPA
-      if (di == 1) MPA = VPA = MVPA = c()
+      if (di == 1) MPA = VPA = MVPA = MPA_steps = VPA_steps = MVPA_steps = c()
+      # minutes
       MPA[di] = length(which(data[which(day == di),"steps"] < cadence_VIG & data[which(day == di),"steps"] >= cadence_MOD))
       VPA[di] = length(which(data[which(day == di),"steps"] >= cadence_VIG))
       MVPA[di] = length(which(data[which(day == di),"steps"] >= cadence_MOD))
+      # steps
+      MPA_steps[di]  <- sum(data[day == di & data$steps < cadence_VIG & data$steps >= cadence_MOD, "steps"], na.rm = TRUE)
+      VPA_steps[di]  <- sum(data[day == di & data$steps >= cadence_VIG, "steps"], na.rm = TRUE)
+      MVPA_steps[di] <- sum(data[day == di & data$steps >= cadence_MOD, "steps"], na.rm = TRUE)
     }
 
     ##OUTPUT PER DAY
     names.out = c("ID", "date", "weekday", "weekday_num",
                   "dur_day_min", "dur_wear_min", "dur_awake_perc",
                   "threshold_MOD_spm", "threshold_VIG_spm",
-                  "stepsperday", CAD_peaks[[1]]$names, CAD_bands[[1]]$names,
-                  "MPA_min","VPA_min","MVPA_min")
+                  "stepsperday",
+                  CAD_peaks[[1]]$names,
+                  paste0(CAD_bands[[1]]$names, "_min"), paste0(CAD_bands[[1]]$names, "_steps"),
+                  "MPA_min","VPA_min","MVPA_min",
+                  "MPA_steps","VPA_steps","MVPA_steps")
 
     daily.out = data.frame(matrix(NA, length(unique(day[which(is.na(day) == FALSE)])), length(names.out)))
     colnames(daily.out) = names.out
@@ -152,7 +162,9 @@ step.metrics = function(datadir, outputdir="./",
     daily.out[,fi] = wear.min; fi = fi + 1
     daily.out[,fi] = wear.awake.perc; fi = fi + 1
     daily.out[,fi:(fi + 1)] = cbind(rep(cadence_MOD, times = nrow(daily.out)), rep(cadence_VIG, times = nrow(daily.out))); fi = fi + 2
-    daily.out[,fi:ncol(daily.out)] = cbind(stepsperday, CAD_peaks_spm, CAD_bands_spm, MPA, VPA, MVPA)
+    daily.out[,fi:ncol(daily.out)] = cbind(stepsperday, CAD_peaks_spm,
+                                           CAD_bands_spm_min, CAD_bands_spm_steps,
+                                           MPA, VPA, MVPA, MPA_steps, VPA_steps, MVPA_steps)
     # Create output directory
     if (dir.exists(outputdir) == FALSE) {
       dir.create(outputdir)
