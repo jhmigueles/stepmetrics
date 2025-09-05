@@ -1,0 +1,30 @@
+citHeader("To cite stepmetrics in publications, please use:")
+
+vers <- meta$Version
+year <- local({
+  y <- NULL
+  if (!is.null(meta[["Date/Publication"]])) {
+    # e.g. "2025-09-05 12:34:56 UTC"
+    y <- as.POSIXlt(meta[["Date/Publication"]], tz = "UTC")$year + 1900
+  } else if (!is.null(meta$Date)) {
+    # e.g. "2025-09-01"
+    y <- as.POSIXlt(meta$Date, tz = "UTC")$year + 1900
+  } else if (!is.null(meta$Packaged)) {
+    # e.g. "2025-09-05 12:34:56 UTC; your.name@domain.com"
+    pkgd <- sub(" .*", "", meta$Packaged)
+    y <- as.POSIXlt(pkgd, tz = "UTC")$year + 1900
+  } else {
+    y <- as.integer(format(Sys.Date(), "%Y"))
+  }
+  as.character(y)
+})
+
+citEntry(
+  entry    = "Manual",
+  title    = "stepmetrics: Calculate Step and Cadence Metrics from Wearable Data",
+  author   = "Jairo Hidalgo Migueles",
+  year     = year,
+  note     = paste("R package version", vers),
+  url      = "https://CRAN.R-project.org/package=stepmetrics",
+  doi      = "10.5281/zenodo.7858094"
+)
