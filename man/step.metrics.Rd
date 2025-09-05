@@ -2,7 +2,7 @@
 % Please edit documentation in R/step.metrics.R
 \name{step.metrics}
 \alias{step.metrics}
-\title{Function to calculate and export step metrics.}
+\title{Calculate and export daily and person-level step and cadence metrics}
 \usage{
 step.metrics(
   datadir,
@@ -22,44 +22,95 @@ step.metrics(
 )
 }
 \arguments{
-\item{datadir}{Character (no default). Directory where the files containing the steps data are stored, e.g., "C:/mydata/". If you are trying to process GGIR output, then this should be the output directory from GGIR (name starts with "output_").}
+\item{datadir}{Character. Path to the directory containing the step data.
+If processing GGIR output, provide the GGIR output folder (its name
+starts with `"output_"`); the function will then look inside
+`meta/ms2.out/`.}
 
-\item{outputdir}{Character (no default). Directory where the output needs to be stored. Note that this function will attempt to create folders in this directory and uses those folder to keep output.}
+\item{outputdir}{Character. Directory where results should be stored.
+Subfolders will be created as needed (`daySummary/`).}
 
-\item{idloc}{Character (default = "_"). The ID is expected to be before the character(s) specified by \code{idloc} in the filename}
+\item{idloc}{Character (default = `"_"`). Delimiter used to extract
+participant IDs from filenames (ID is expected before this string).}
 
-\item{cadence_bands}{Numeric (default = c(0, 1, 20, 40, 60, 80, 100, 120, Inf)). Cadence bands to calculate the time accumulated into.}
+\item{cadence_bands}{Numeric vector (default =
+`c(0, 1, 20, 40, 60, 80, 100, 120, Inf)`).
+Breakpoints (in steps/min) used to compute time and steps per cadence band.}
 
-\item{cadence_peaks}{Numeric (default = c(1, 30, 60)). Cadence peaks to calculate.}
+\item{cadence_peaks}{Numeric vector (default = `c(1, 30, 60)`).
+Cadence peak values (e.g., peak 30 = mean of the top 30 cadence minutes).}
 
-\item{cadence_MOD}{Numeric (default = 100)}
+\item{cadence_MOD}{Numeric (default = 100).
+Threshold cadence (steps/min) for moderate physical activity.}
 
-\item{cadence_VIG}{Numeric (default = 130)}
+\item{cadence_VIG}{Numeric (default = 130).
+Threshold cadence (steps/min) for vigorous physical activity.}
 
-\item{includedaycrit}{Numeric (default = 10)}
+\item{includedaycrit}{Numeric (default = 10).
+Minimum wear time in hours for a day to be considered valid.}
 
-\item{includeawakecrit}{Numeric (default = NULL). Only use this if part 5 reports are available.}
+\item{includeawakecrit}{Numeric (default = NULL).
+If GGIR part 5 outputs are available, use the proportion of awake time
+instead of wear time to define valid days.}
 
-\item{includedaylengthcrit}{Numeric (default = 23). Only use this if part 5 reports are available.}
+\item{includedaylengthcrit}{Numeric (default = 23).
+Minimum day length (hours) for a day to be valid (only relevant if using
+GGIR part 5 outputs).}
 
-\item{exclude_pk30_0}{Logical (default = TRUE)}
+\item{exclude_pk30_0}{Logical (default = TRUE).
+Exclude days with zero values in the 30-minute cadence peak.}
 
-\item{exclude_pk60_0}{Logical (default = TRUE)}
+\item{exclude_pk60_0}{Logical (default = TRUE).
+Exclude days with zero values in the 60-minute cadence peak.}
 
-\item{time_format}{Character (default = NULL)}
+\item{time_format}{Character (default = NULL).
+Time format used when reading non-GGIR step files.}
 
-\item{verbose}{logical (default = TRUE). Whether to print progress messages in the console.}
+\item{verbose}{Logical (default = TRUE).
+Whether to print progress messages.}
 }
 \value{
-This function does not return any object. It stores csv files with the
-         day-level and person-level data in the output directory.
+This function does not return an object. It writes:
+\itemize{
+  \item \code{<ID>_DaySum.csv} in `outputdir/daySummary/` with daily metrics.
+  \item \code{personSummary.csv} in `outputdir/` with person-level averages.
+}
 }
 \description{
-This function loads the minute-based files containing the step counts,
-               calculate the step and cadence metrics and store them in day-level and person-level csv files.
+This function processes minute-level step count files (raw exports or
+GGIR output) and derives a comprehensive set of **daily** and
+**person-level** metrics. Metrics include total steps, cadence peaks,
+time and steps accumulated in predefined cadence bands, and time and steps
+in moderate, vigorous, and moderate-to-vigorous physical activity
+(MPA, VPA, MVPA).
+
+The function writes two types of summary CSVs:
+\itemize{
+  \item \strong{Day-level:} One file per participant per day, stored in
+        `outputdir/daySummary/`.
+  \item \strong{Person-level:} A single file with aggregated averages
+        across valid days per participant, stored as
+        `outputdir/personSummary.csv`.
+}
+}
+\details{
+For each participant and day, the function computes:
+\itemize{
+  \item Total steps per day
+  \item Cadence peak metrics (e.g., peak 1, 30, 60 minutes)
+  \item Minutes and steps in each cadence band
+  \item Minutes in MPA, VPA, and MVPA
+  \item Steps accumulated in MPA, VPA, and MVPA
+  \item Recording duration, valid wear time, and awake time (if GGIR available)
+}
+
+Person-level outputs include plain, weighted (weekday/weekend), and
+stratified (weekday/weekend separately) averages of all variables.
 }
 \examples{
 \dontrun{
+# Process CSV files in "C:/mydata" and store results in "D:/myoutput"
 step.metrics(datadir = "C:/mydata/", outputdir = "D:/myoutput/")
 }
+
 }
