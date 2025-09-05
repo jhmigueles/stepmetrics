@@ -2,23 +2,94 @@
 % Please edit documentation in R/readFile.R
 \name{readFile}
 \alias{readFile}
-\title{Reads and formats the timestamp and step data for one participant.}
+\title{Read and standardize minute-level step data for one participant}
 \usage{
 readFile(path, time_format = c())
 }
 \arguments{
-\item{path}{Character (no default). Path to file or files with the timestamp and step data for one participant.}
+\item{path}{Character vector. Path(s) to the file(s) containing timestamp
+and step data for one participant. When multiple files are provided,
+they are concatenated in the order given.}
 
-\item{time_format}{Character (no default, optional). String indicating the format of the timestamp in data (as in strptime)}
+\item{time_format}{Character (optional). Explicit timestamp format string
+(as used by \code{\link[base]{strptime}}) to override auto-detection
+for CSV inputs. If \code{NULL}, common formats are tried automatically.}
 }
 \value{
-Data frame containing timestamp and steps in a clean format for one participant.
+A \code{data.frame} with two columns:
+\describe{
+  \item{\code{timestamp}}{Character vector of ISO-8601 datetimes
+    (\code{"YYYY-MM-DDTHH:MM:SS±ZZZZ"}) for CSV/AGD inputs. For GGIR
+    \code{RData} inputs, timestamps are carried through as present in
+    \code{IMP$metashort}.}
+  \item{\code{steps}}{Numeric vector of steps per minute. If the source
+    data have sub-minute epochs, values are summed to 60-second bins.
+    Epochs longer than 60 seconds are not supported and trigger an error.}
+}
 }
 \description{
-Reads and formats the timestamp and step data for one participant.
+Reads one or more files for a single participant and returns a clean,
+minute-level data frame with two columns: `timestamp` and `steps`.
+The function auto-detects common file formats and timestamp layouts,
+fixes ActiGraph CSV headers/metadata when present, and aggregates to a
+60-second epoch if input data are recorded at sub-minute resolution.
+
+**Supported input formats**
+\itemize{
+  \item \strong{CSV}: generic CSVs and ActiGraph exports (header lines
+        and delimiters auto-detected; handles date/time split columns).
+  \item \strong{AGD}: ActiGraph binary files via \pkg{PhysicalActivity}.
+  \item \strong{RData}: GGIR output (\code{IMP$metashort}).
 }
+}
+\details{
+\itemize{
+  \item \strong{CSV handling:} The function detects and skips ActiGraph
+        header lines (typically 10), infers the field separator
+        (comma/semicolon), and reconstructs a single timestamp when date
+        and time are stored in separate columns. If no explicit timestamp
+        column exists (rare ActiGraph cases), it reconstructs one from the
+        file metadata (start time + epoch).
+  \item \strong{AGD handling:} AGD files are read with
+        \code{\link[PhysicalActivity]{readActigraph}}; the recording
+        start and epoch length are obtained from the embedded database and
+        used to build a regular timestamp sequence.
+  \item \strong{Step column detection:} The column containing step counts
+        is inferred by matching names containing \emph{"step"} or
+        \emph{"value"}; if multiple candidates are present, the column with
+        higher variability is chosen.
+  \item \strong{Epoch standardization:} If the input epoch is shorter than
+        60 seconds, rows are aggregated by summing steps to 1-minute bins.
+        Epochs longer than 60 seconds are currently unsupported.
+}
+}
+\section{Time zones}{
+
+For CSV/AGD inputs, timestamps are returned in ISO-8601 with an explicit
+offset. If \code{time_format} is provided, it is passed directly to
+\code{\link[base]{strptime}} for parsing; otherwise a set of common formats
+is attempted.
+}
+
 \examples{
 \dontrun{
-readFile(path)
+# Single CSV
+df <- readFile("data/participant_001.csv")
+
+# Multiple CSVs for one participant (concatenated)
+df <- readFile(c("data/part001_day1.csv", "data/part001_day2.csv"))
+
+# ActiGraph AGD
+df <- readFile("data/participant_001.agd")
+
+# GGIR output (RData containing IMP$metashort)
+df <- readFile("output_subject001.RData")
+
+# Specify a custom timestamp format (CSV)
+df <- readFile("data/custom.csv", time_format = "\%d/\%m/\%Y \%H:\%M:\%S")
 }
+
+}
+\seealso{
+\code{\link{step.metrics}}, \code{\link{get_cadence_bands}}
 }

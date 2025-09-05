@@ -57,8 +57,7 @@ instead of wear time to define valid days.}
 Minimum day length (hours) for a day to be valid (only relevant if using
 GGIR part 5 outputs).}
 
-\item{exclude_pk30_0}{Logical (default = TRUE).
-Exclude days with zero values in the 30-minute cadence peak.}
+\item{exclude_pk30_0}{Logical (default = TRUE).}
 
 \item{exclude_pk60_0}{Logical (default = TRUE).
 Exclude days with zero values in the 60-minute cadence peak.}
@@ -77,7 +76,7 @@ This function does not return an object. It writes:
 }
 }
 \description{
-This function processes minute-level step count files (raw exports or
+This function processes epoch-level step count files (raw exports or
 GGIR output) and derives a comprehensive set of **daily** and
 **person-level** metrics. Metrics include total steps, cadence peaks,
 time and steps accumulated in predefined cadence bands, and time and steps

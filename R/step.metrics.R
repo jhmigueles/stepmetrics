@@ -1,7 +1,7 @@
 #' Calculate and export daily and person-level step and cadence metrics
 #'
 #' @description
-#' This function processes minute-level step count files (raw exports or
+#' This function processes epoch-level step count files (raw exports or
 #' GGIR output) and derives a comprehensive set of **daily** and
 #' **person-level** metrics. Metrics include total steps, cadence peaks,
 #' time and steps accumulated in predefined cadence bands, and time and steps
@@ -43,7 +43,6 @@
 #'   Minimum day length (hours) for a day to be valid (only relevant if using
 #'   GGIR part 5 outputs).
 #' @param exclude_pk30_0 Logical (default = TRUE).
-#'   Exclude days with zero values in the 30-minute cadence peak.
 #' @param exclude_pk60_0 Logical (default = TRUE).
 #'   Exclude days with zero values in the 60-minute cadence peak.
 #' @param time_format Character (default = NULL).
