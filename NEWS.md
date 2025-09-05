@@ -18,6 +18,7 @@
 -   Improve peak cadence test.
 -   Improve extraction of wear time when using GGIR-processed data.
 -   Improve identification of day indices when there are time gaps. #17
+-   Improved flexibility to handle Fitbit time stamps. #13
 
 # stepmetrics 0.1.2
 
