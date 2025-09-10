@@ -87,8 +87,8 @@ test_that("reads and formats data correctly", {
   expect_true(max(data7$steps) == 132)
 
   # GGIR output
-  paths = system.file("extdata","testfiles_GGIR/output_test/", package = "stepmetrics")
-  file8 = dir(paths, recursive = TRUE, full.names = TRUE)
+  file8 = system.file("extdata","testfiles_GGIR/output_test/meta/ms2.out/101_1.gt3x.RData",
+                      package = "stepmetrics")
   data8 = readFile(file8)
 
   expect_equal(dim(data8), c(13635, 2))
