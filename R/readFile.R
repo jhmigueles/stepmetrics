@@ -63,7 +63,8 @@
 #' @examples
 #' \donttest{
 #' # Fitbit csv
-#' fitbit_csv = system.file("extdata", "testfiles_fitbit", "S001_d1_1min_epoch.csv", package = "stepmetrics")
+#' fitbit_csv = system.file("extdata", "testfiles_fitbit",
+#'                          "S001_d1_1min_epoch.csv", package = "stepmetrics")
 #' df <- readFile(fitbit_csv)
 #'
 #' # ActiGraph AGD
