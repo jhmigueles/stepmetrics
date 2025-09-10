@@ -39,8 +39,9 @@ warning describing the missing requirement.
 }
 \examples{
 \dontrun{
-# Typical GGIR output folder
-isGGIRoutput("C:/mystudy/output_GGIR/")
+# GGIR output folder
+ggir_output_dir = system.file("extdata", "testfiles_GGIR", "output_test", package = "stepmetrics")
+isGGIRoutput(ggir_output_dir)
 
 # Non-GGIR directory
 isGGIRoutput("C:/mystudy/rawdata/")

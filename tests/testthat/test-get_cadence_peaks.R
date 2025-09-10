@@ -1,7 +1,7 @@
 test_that("calculation of cadence peaks works", {
 
   # we use the testfile: fitbit -----
-  paths = dir(system.file("testfiles_fitbit/", package = "stepmetrics"), full.names = TRUE)
+  paths = dir(system.file("extdata", "testfiles_fitbit/", package = "stepmetrics"), full.names = TRUE)
   x = readFile(paths)
 
   # tests -----------

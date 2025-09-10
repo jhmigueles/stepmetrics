@@ -107,9 +107,8 @@ Person-level outputs include plain, weighted (weekday/weekend), and
 stratified (weekday/weekend separately) averages of all variables.
 }
 \examples{
-\dontrun{
-# Process CSV files in "C:/mydata" and store results in "D:/myoutput"
-step.metrics(datadir = "C:/mydata/", outputdir = "D:/myoutput/")
+\donttest{
+datadir = system.file("extdata", "testfiles_fitbit", package = "stepmetrics")
+step.metrics(datadir = datadir, outputdir = tempdir())
 }
-
 }

@@ -1,7 +1,7 @@
 test_that("checks if a GGIR output is recognized", {
 
   # It recognizes a GGIR output
-  path = system.file("testfiles_GGIR/output_test/", package = "stepmetrics")
+  path = system.file("extdata", "testfiles_GGIR/output_test/", package = "stepmetrics")
 
   expect_true(isGGIRoutput(path))
 
@@ -11,7 +11,7 @@ test_that("checks if a GGIR output is recognized", {
   expect_false(isGGIRoutput(path))
 
   # check 2 - does name of directory start with output_?
-  path = system.file("testfiles_fitbit", package = "stepmetrics")
+  path = system.file("extdata", "testfiles_fitbit", package = "stepmetrics")
 
   expect_false(isGGIRoutput(path))
 

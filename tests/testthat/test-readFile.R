@@ -17,8 +17,9 @@ test_that("reads and formats data correctly", {
 
   # tests ------
   # fitbit files -----
-  paths = dir(system.file("testfiles_fitbit/", package = "stepmetrics"), full.names = TRUE)
-  file1 = paths
+  file1 = c(system.file("extdata/testfiles_fitbit/S001_d1_1min_epoch.csv", package = "stepmetrics"),
+            system.file("extdata/testfiles_fitbit/S001_d2_1min_epoch.csv", package = "stepmetrics"),
+            system.file("extdata/testfiles_fitbit/S001_d3_1min_epoch.csv", package = "stepmetrics"))
   data1 = readFile(file1)
 
   expect_equal(dim(data1), c(1440*3, 2))
@@ -26,9 +27,8 @@ test_that("reads and formats data correctly", {
   expect_true(is.ISO8601(data1$timestamp[1]))
 
   # actigraph agd files -----
-  paths = dir(system.file("testfiles_agd/", package = "stepmetrics"), full.names = TRUE)
-  file2 = grep("1min", paths, value = TRUE)
-  file3 = grep("30sec", paths, value = TRUE)
+  file2 = system.file("extdata/testfiles_agd/S002_1min.agd", package = "stepmetrics")
+  file3 = system.file("extdata/testfiles_agd/3h30sec.agd", package = "stepmetrics")
 
   # 1min epoch
   # data2 = readFile(file2)
@@ -45,7 +45,7 @@ test_that("reads and formats data correctly", {
   expect_true(is.ISO8601(data3$timestamp[1]))
 
   # actigraph csv files -----
-  paths = dir(system.file("testfiles_actigraph_csv/", package = "stepmetrics"), full.names = TRUE)
+  paths = dir(system.file("extdata/testfiles_actigraph_csv/", package = "stepmetrics"), full.names = TRUE)
   file4 = grep("datatable", paths, value = TRUE)   # with header / timestamp
   file5 = grep("noTS", paths, value = TRUE)        # without header / timestamp
   file6 = grep("semicolon", paths, value = TRUE)        # without header / timestamp
@@ -87,8 +87,8 @@ test_that("reads and formats data correctly", {
   expect_true(max(data7$steps) == 132)
 
   # GGIR output
-  paths = dir(system.file("testfiles_GGIR//", package = "stepmetrics"), full.names = TRUE)
-  file8 = dir(paths, recursive = TRUE, full.names = TRUE)
+  file8 = system.file("extdata/testfiles_GGIR/output_test/meta/ms2.out/101_1.gt3x.RData",
+                      package = "stepmetrics")
   data8 = readFile(file8)
 
   expect_equal(dim(data8), c(13635, 2))
