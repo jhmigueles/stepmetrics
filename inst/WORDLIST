@@ -1,5 +1,6 @@
 AGD
 ActiGraph
+Barreira
 CMD
 Codecov
 Fitbit
@@ -7,6 +8,7 @@ GGIR
 Github
 JH
 MPA
+MSS
 MVPA
 POSIXct
 RData
@@ -16,8 +18,12 @@ VPA
 Verisense
 Zenodo
 accelerometer
+al
+bjsports
 csv
 daySummary
+doi
+et
 github
 nZeroes
 outputdir
