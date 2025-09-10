@@ -73,10 +73,14 @@
 #'
 #' @examples
 #' \dontrun{
-#' # Process CSV files in "C:/mydata" and store results in "D:/myoutput"
-#' step.metrics(datadir = "C:/mydata/", outputdir = "D:/myoutput/")
+#' # Minimal runnable example (<5 s) that writes only to a temp directory.
+#' # If you ship tiny demo files in inst/extdata (recommended), use them:
+#' \donttest{
+#  # define data directory
+#' datadir = system.file("extdata", "testfiles_fitbit", package = "stepmetrics")
+#  # run step.metrics
+#' step.metrics(datadir = datadir, outputdir = tempdir())
 #' }
-#'
 #' @importFrom utils write.csv
 #' @export
 step.metrics = function(datadir, outputdir="./",

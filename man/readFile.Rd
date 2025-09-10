@@ -72,21 +72,14 @@ is attempted.
 }
 
 \examples{
-\dontrun{
-# Single CSV
-df <- readFile("data/participant_001.csv")
-
-# Multiple CSVs for one participant (concatenated)
-df <- readFile(c("data/part001_day1.csv", "data/part001_day2.csv"))
+\donttest{
+# Fitbit csv
+fitbit_csv = system.file("extdata", "testfiles_fitbit", "S001_d1_1min_epoch.csv", package = "stepmetrics")
+df <- readFile(fitbit_csv)
 
 # ActiGraph AGD
-df <- readFile("data/participant_001.agd")
-
-# GGIR output (RData containing IMP$metashort)
-df <- readFile("output_subject001.RData")
-
-# Specify a custom timestamp format (CSV)
-df <- readFile("data/custom.csv", time_format = "\%d/\%m/\%Y \%H:\%M:\%S")
+actigraph_agd = system.file("extdata", "testfiles_agd", "3h30sec.agd", package = "stepmetrics")
+df <- readFile(actigraph_agd)
 }
 
 }
