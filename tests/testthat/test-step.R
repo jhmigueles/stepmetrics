@@ -15,8 +15,7 @@ test_that("step.metrics produces output", {
   # test for GGIR output ----
   datadir = system.file("extdata","testfiles_GGIR/output_test/",
                         package = "stepmetrics")
-  temp_outputdir = tempfile("ggir_out")
-  dir.create(temp_outputdir)
+  temp_outputdir = tempdir()
   step.metrics(datadir = datadir, outputdir = temp_outputdir)
 
   # tests ----
