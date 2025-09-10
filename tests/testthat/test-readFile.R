@@ -17,8 +17,8 @@ test_that("reads and formats data correctly", {
 
   # tests ------
   # fitbit files -----
-  paths = dir(system.file("extdata", "testfiles_fitbit/", package = "stepmetrics"), full.names = TRUE)
-  file1 = paths
+  paths = system.file("extdata", "testfiles_fitbit/", package = "stepmetrics")
+  file1 = dir(paths, full.names = TRUE)
   data1 = readFile(file1)
 
   expect_equal(dim(data1), c(1440*3, 2))
@@ -87,7 +87,7 @@ test_that("reads and formats data correctly", {
   expect_true(max(data7$steps) == 132)
 
   # GGIR output
-  paths = dir(system.file("extdata","testfiles_GGIR//", package = "stepmetrics"), full.names = TRUE)
+  paths = system.file("extdata","testfiles_GGIR/output_test/", package = "stepmetrics")
   file8 = dir(paths, recursive = TRUE, full.names = TRUE)
   data8 = readFile(file8)
 

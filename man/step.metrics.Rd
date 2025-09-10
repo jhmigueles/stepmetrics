@@ -106,3 +106,9 @@ For each participant and day, the function computes:
 Person-level outputs include plain, weighted (weekday/weekend), and
 stratified (weekday/weekend separately) averages of all variables.
 }
+\examples{
+\donttest{
+datadir = system.file("extdata", "testfiles_fitbit", package = "stepmetrics")
+step.metrics(datadir = datadir, outputdir = tempdir())
+}
+}

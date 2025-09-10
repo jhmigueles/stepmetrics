@@ -43,6 +43,12 @@
 #' @export
 isGGIRoutput = function(path) {
 
+  # Handle empty and multi-path input
+  if (length(path) == 0L) return(FALSE)
+  if (length(path) > 1L) {
+    return(any(vapply(path, isGGIRoutput, logical(1), USE.NAMES = FALSE)))
+  }
+
   # 1 - path is a directory
   check1 = dir.exists(path)
 
