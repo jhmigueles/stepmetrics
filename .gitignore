@@ -13,5 +13,6 @@ vignettes/*.html
 vignettes/*.R
 man/figures/logo_hd.png
 cran-comments.md
+CRAN-SUBMISSION
 !inst/extdata/testfiles_GGIR/**/*.RData
 
