@@ -4,3 +4,4 @@
 ^\.github$
 ^data-raw$
 ^logo_hd\.png$
+^cran-comments\.md$

@@ -12,5 +12,6 @@ inst/doc
 vignettes/*.html
 vignettes/*.R
 man/figures/logo_hd.png
+cran-comments.md
 !inst/extdata/testfiles_GGIR/**/*.RData
 
