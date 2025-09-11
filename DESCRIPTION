@@ -11,12 +11,12 @@ Authors@R: c(
     person("University of Alabama", "", role = "fnd"))
 Description: Provides functions to calculate step- and cadence-based metrics from 
     timestamped accelerometer and wearable device data. Supports CSV and AGD files from 
-    ActiGraph devices, CSV files from Fitbit devices, and step counts derived   
-    with GGIR <https://github.com/wadpac/GGIR>, with automatic handling of epoch lengths from 1 to 
-    60 seconds. Metrics include total steps, cadence peaks, minutes and steps 
-    in predefined cadence bands, and time and steps in moderate-to-vigorous 
-    physical activity (MVPA). Methods and thresholds are informed by the 
-    literature, e.g., 
+    'ActiGraph' devices, CSV files from 'Fitbit' devices, and step counts derived   
+    with R package 'GGIR' <https://github.com/wadpac/GGIR>, with automatic handling 
+    of epoch lengths from 1 to 60 seconds. Metrics include total steps, cadence 
+    peaks, minutes and steps in predefined cadence bands, and time and steps in 
+    moderate-to-vigorous physical activity (MVPA). Methods and thresholds are 
+    informed by the literature, e.g., 
     Tudor-Locke and Rowe (2012) <doi:10.2165/11599170-000000000-00000>, 
     Barreira et al. (2012) <doi:10.1249/MSS.0b013e318254f2a3>, 
     and Tudor-Locke et al. (2018) <doi:10.1136/bjsports-2017-097628>. 
