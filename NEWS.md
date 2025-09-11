@@ -1,6 +1,9 @@
-# stepmetrics 1.0.0
+# stepmetrics 1.0.1
+(CRAN release date: 2025-?-?)
 
-(CRAN release date: 2025-09-05)
+- DESCRIPTION: quote brand/product names ('ActiGraph', 'Fitbit', 'GGIR') per CRAN policy.
+
+# stepmetrics 1.0.0
 
 - Added steps as well as minutes in cadence bands (`get_cadence_bands()`).
 - Added MPA, VPA, and MVPA step counts (`*_steps` variables).
