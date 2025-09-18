@@ -4,7 +4,7 @@
 \alias{readFile}
 \title{Read and standardize minute-level step data for one participant}
 \usage{
-readFile(path, time_format = c())
+readFile(path, time_format = c(), tz = "")
 }
 \arguments{
 \item{path}{Character vector. Path(s) to the file(s) containing timestamp
@@ -13,15 +13,24 @@ they are concatenated in the order given.}
 
 \item{time_format}{Character (optional). Explicit timestamp format string
 (as used by \code{\link[base]{strptime}}) to override auto-detection
-for CSV inputs. If \code{NULL}, common formats are tried automatically.}
+for CSV inputs. If omitted, a set of common formats is tried
+automatically. \emph{The time zone is controlled by} \code{tz}.}
+
+\item{tz}{Character (optional). Time zone in which to interpret and emit
+timestamps for CSV/AGD inputs (e.g., \code{"Europe/Madrid"}). The default
+\code{""} uses the current R session time zone
+(\code{Sys.timezone()} / \code{Sys.getenv("TZ")}). The local \emph{clock
+time} in the data is preserved; the returned `timestamp` strings include
+an explicit ISO-8601 offset (\code{\%z}). Ignored for GGIR \code{RData}
+inputs (timestamps are carried through as stored).}
 }
 \value{
 A \code{data.frame} with two columns:
 \describe{
   \item{\code{timestamp}}{Character vector of ISO-8601 datetimes
-    (\code{"YYYY-MM-DDTHH:MM:SS(+/-)ZZZZ"}) for CSV/AGD inputs. For GGIR
+    (\code{"YYYY-MM-DDTHH:MM:SS\%z"}) for CSV/AGD inputs. For GGIR
     \code{RData} inputs, timestamps are carried through as present in
-    \code{IMP$metashort}.}
+    \code{IMP$metashort} (which may not include an offset).}
   \item{\code{steps}}{Numeric vector of steps per minute. If the source
     data have sub-minute epochs, values are summed to 60-second bins.
     Epochs longer than 60 seconds are not supported and trigger an error.}
@@ -36,54 +45,61 @@ fixes ActiGraph CSV headers/metadata when present, and aggregates to a
 
 **Supported input formats**
 \itemize{
-  \item \strong{CSV}: generic CSVs and ActiGraph exports (header lines
-        and delimiters auto-detected; handles date/time split columns).
+  \item \strong{CSV}: Generic CSVs and ActiGraph exports (header lines
+    and delimiters auto-detected; handles date/time split columns).
   \item \strong{AGD}: ActiGraph binary files via \pkg{PhysicalActivity}.
   \item \strong{RData}: GGIR output (\code{IMP$metashort}).
 }
 }
 \details{
 \itemize{
-  \item \strong{CSV handling:} The function detects and skips ActiGraph
-        header lines (typically 10), infers the field separator
-        (comma/semicolon), and reconstructs a single timestamp when date
-        and time are stored in separate columns. If no explicit timestamp
-        column exists (rare ActiGraph cases), it reconstructs one from the
-        file metadata (start time + epoch).
-  \item \strong{AGD handling:} AGD files are read with
-        \code{\link[PhysicalActivity]{readActigraph}}; the recording
-        start and epoch length are obtained from the embedded database and
-        used to build a regular timestamp sequence.
-  \item \strong{Step column detection:} The column containing step counts
-        is inferred by matching names containing \emph{"step"} or
-        \emph{"value"}; if multiple candidates are present, the column with
-        higher variability is chosen.
+  \item \strong{CSV handling:} Detects and skips ActiGraph header lines
+    (typically 10), infers the field separator (comma/semicolon), and
+    reconstructs a single timestamp when date and time are stored in
+    separate columns. If no explicit timestamp column exists (rare
+    ActiGraph cases), a timestamp sequence is reconstructed from the
+    file metadata (start time + epoch).
+  \item \strong{AGD handling:} Reads via
+    \code{\link[PhysicalActivity]{readActigraph}}. The recording start time
+    and epoch length are obtained from the embedded database and used to
+    build a regular timestamp sequence, interpreted in \code{tz}.
+  \item \strong{Step column detection:} The step-count column is inferred
+    by matching names containing \emph{"step"} or \emph{"value"}; if multiple
+    candidates are present, the column with higher variability is chosen.
   \item \strong{Epoch standardization:} If the input epoch is shorter than
-        60 seconds, rows are aggregated by summing steps to 1-minute bins.
-        Epochs longer than 60 seconds are currently unsupported.
+    60 seconds, rows are aggregated by summing steps to 1-minute bins.
+    Epochs longer than 60 seconds are currently unsupported and result in
+    an error.
 }
 }
 \section{Time zones}{
 
-For CSV/AGD inputs, timestamps are returned in ISO-8601 with an explicit
-offset. If \code{time_format} is provided, it is passed directly to
-\code{\link[base]{strptime}} for parsing; otherwise a set of common formats
-is attempted.
+\describe{
+  \item{\strong{CSV / AGD inputs:}}{Timestamps are parsed in \code{tz}
+    (default: session time zone) and emitted as ISO-8601 with an explicit
+    offset. This preserves the local \emph{clock time}. Running the same
+    code on machines with different session time zones may change the
+    \emph{offset} but not the \emph{clock time} if you pass a fixed
+    \code{tz}.}
+  \item{\strong{GGIR \code{RData} inputs:}}{Timestamps are returned as
+    stored in \code{IMP$metashort}; no conversion is performed.}
+}
 }
 
 \examples{
 \donttest{
-# Fitbit csv
-fitbit_csv = system.file("extdata", "testfiles_fitbit",
-                         "S001_d1_1min_epoch.csv", package = "stepmetrics")
-df <- readFile(fitbit_csv)
+# Fitbit CSV (auto-detect format)
+fitbit_csv <- system.file("extdata", "testfiles_fitbit",
+                          "S001_d1_1min_epoch.csv", package = "stepmetrics")
+df1 <- readFile(fitbit_csv)
 
-# ActiGraph AGD
-actigraph_agd = system.file("extdata", "testfiles_agd", "3h30sec.agd", package = "stepmetrics")
-df <- readFile(actigraph_agd)
+# ActiGraph AGD (explicitly pin time zone for reproducibility)
+agd <- system.file("extdata", "testfiles_agd", "3h30sec.agd", package = "stepmetrics")
+df2 <- readFile(agd, tz = "Europe/Madrid")
 }
 
 }
 \seealso{
-\code{\link{step.metrics}}, \code{\link{get_cadence_bands}}
+\code{\link{step.metrics}}, \code{\link{get_cadence_bands}},
+\code{\link[PhysicalActivity]{readActigraph}}
 }

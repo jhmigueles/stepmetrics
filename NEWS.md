@@ -1,5 +1,13 @@
+# stepmetrics 1.0.2
+
+- Fix: preserve local clock time when parsing timestamps from CSV/AGD. 
+  Previously, times could shift on systems using a different TZ (e.g., UTC). 
+  Timestamps are now consistently emitted in ISO-8601 with the local offset.
+- Tests: make `readFile()` tests timezone-stable.
+- Docs: clarify timezone behavior in `?readFile`.
+
 # stepmetrics 1.0.1
-(CRAN release date: 2025-?-?)
+(CRAN release date: 2025-09-16)
 
 - DESCRIPTION: quote brand/product names ('ActiGraph', 'Fitbit', 'GGIR') per CRAN policy.
 
