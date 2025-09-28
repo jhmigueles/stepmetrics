@@ -1,18 +1,33 @@
 test_that("reads and formats data correctly", {
   testthat::skip_if_not_installed("RSQLite")
 
-  # function to check if is ISO8601
-  # https://github.com/wadpac/GGIR/blob/master/R/is.ISO8601.R
-  is.ISO8601 = function(x) {
-    NNeg = length(unlist(strsplit(x,"[-]")))
-    NPos = length(unlist(strsplit(x,"[+]")))
-    is.ISO = FALSE
-    if (NPos == 2) {
-      is.ISO = TRUE
-    } else if (NNeg == 4 | NNeg == 2) {
-      is.ISO = TRUE
+  withr::local_locale(c(LC_TIME = "C", LC_COLLATE = "C"))
+
+  # ISO-8601 checker
+  is.ISO8601 <- function(x) {
+    grepl("^\\d{4}-\\d{2}-\\d{2}[ T]\\d{2}:\\d{2}:\\d{2}(?:Z|[+-]\\d{2}:?\\d{2})?$", x)
+  }
+
+  # helper to parse ISO-8601 to a UTC instant, handling Z and ±hh[:mm]
+  parse_iso_utc <- function(x) {
+    stopifnot(length(x) == 1L)
+    rx <- "^([0-9]{4}-[0-9]{2}-[0-9]{2})[ T]([0-9]{2}:[0-9]{2}:[0-9]{2})(Z|([+-])([0-9]{2}):?([0-9]{2}))?$"
+    m <- regexec(rx, x)
+    g <- regmatches(x, m)[[1]]
+    if (length(g) == 0L) return(as.POSIXct(NA))
+
+    # groups: 1=full, 2=Y-m-d, 3=H:M:S, 4='Z' or offset, 5=sign, 6=hh, 7=mm
+    dt <- paste(g[2], g[3])                           # "YYYY-mm-dd HH:MM:SS"
+    t  <- as.POSIXct(dt, tz = "UTC", format = "%Y-%m-%d %H:%M:%S")
+
+    # compute offset seconds
+    off_sec <- 0L
+    if (!is.na(g[4]) && nzchar(g[4]) && g[4] != "Z") {
+      sign <- if (g[5] == "+") 1L else -1L
+      hh   <- as.integer(g[6]); mm <- as.integer(g[7])
+      off_sec <- sign * (hh * 3600L + mm * 60L)
     }
-    return(is.ISO)
+    t - off_sec
   }
 
   # tests ------
@@ -82,9 +97,13 @@ test_that("reads and formats data correctly", {
   # one-row header and separated date-time
   data7 = readFile(file7)
 
-  expect_true(grepl("2021-07-03T13:48:00", data7$timestamp[1]))
-  expect_true(min(data7$steps) == 0)
-  expect_true(max(data7$steps) == 132)
+  ts  <- parse_iso_utc(data7$timestamp[1])
+  exp <- as.POSIXct("2021-07-03 13:48:00", tz = "UTC")
+  expect_false(is.na(ts))
+  expect_identical(unclass(as.POSIXct(ts, tz = "UTC")), unclass(exp))
+
+  expect_equal(min(data7$steps), 0)
+  expect_equal(max(data7$steps), 132)
 
   # GGIR output
   file8 = system.file("extdata/testfiles_GGIR/output_test/meta/ms2.out/101_1.gt3x.RData",

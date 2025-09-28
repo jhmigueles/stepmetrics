@@ -1,3 +1,9 @@
+# stepmetrics 1.0.3
+
+- Tests: hardened timestamp checks to be robust across platforms (Windows, macOS ARM, Linux). 
+  Added cross-platform ISO-8601 parser that correctly handles `Z` and `hh:mm` offsets.
+- CI: added macOS ARM (Apple Silicon) checks via R-hub v2 to reproduce CRAN’s environment.
+
 # stepmetrics 1.0.2
 
 - Fix: preserve local clock time when parsing timestamps from CSV/AGD. 

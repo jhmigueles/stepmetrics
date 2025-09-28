@@ -18,7 +18,7 @@ An integer vector of the same length as `ts`, where each element
 }
 \description{
 Converts a vector of ISO 8601 timestamps into sequential day indices
-(1, 2, 3, …), where each unique calendar date corresponds to a unique
+(1, 2, 3, ...), where each unique calendar date corresponds to a unique
 integer. This is useful for looping over or summarizing data by day
 when working with minute-level time series from wearables.
 }

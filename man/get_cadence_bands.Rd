@@ -12,7 +12,7 @@ element represents one minute of the day.}
 
 \item{bands}{Numeric vector of break points that define the cadence bands.
 Defaults to \code{c(0, 1, 20, 40, 60, 80, 100, 120, Inf)}, which produces
-the bands 0, 1–19, 20–39, 40–59, 60–79, 80–99, 100–119, and \eqn{\ge}120 spm.}
+the bands 0, 1-19, 20-39, 40-59, 60-79, 80-99, 100-119, and 120+ spm.}
 }
 \value{
 A list with three elements:
