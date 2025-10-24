@@ -23,7 +23,7 @@
 #'   `meta/ms2.out/`.
 #' @param outputdir Character. Directory where results should be stored.
 #'   Subfolders will be created as needed (`daySummary/`).
-#' @param idloc Character (default = `"_"`). Delimiter used to extract
+#' @param idloc Character (default = NULL). Delimiter used to extract
 #'   participant IDs from filenames (ID is expected before this string).
 #' @param cadence_bands Numeric vector (default =
 #'   `c(0, 1, 20, 40, 60, 80, 100, 120, Inf)`).
@@ -81,7 +81,7 @@
 #' @importFrom utils write.csv
 #' @export
 step.metrics = function(datadir, outputdir="./",
-                        idloc = "_",
+                        idloc = NULL,
                         cadence_bands = c(0, 1, 20, 40, 60, 80, 100, 120, Inf),
                         cadence_peaks = c(1, 30, 60),
                         cadence_MOD = 100,
@@ -104,10 +104,18 @@ step.metrics = function(datadir, outputdir="./",
 
   # Get IDs -----
   ids = c()
-  for (i in 1:length(files)) {
-    ids[i] = unlist(strsplit(files[i], split = idloc, fixed = TRUE))[1]
+  if (is.null(idloc)) {
+    # Use the full file name as the ID
+    ids = files
+  } else {
+    for (i in 1:length(files)) {
+      # Use the provided idloc delimiter
+      ids[i] = unlist(strsplit(files[i], split = idloc, fixed = TRUE))[1]
+    }
   }
   ids = unique(ids)
+
+  # This handles the removal of the .RData extension from GGIR files
   ids = gsub(".RData$", "", ids)
 
   if (verbose == TRUE) {
@@ -121,7 +129,7 @@ step.metrics = function(datadir, outputdir="./",
   for (i in 1:length(ids)) {
     if (verbose == TRUE) cat(paste0(ids[i], " "))
     # read data ----
-    files2read = grep(ids[i], files_fn, value = TRUE)
+    files2read = grep(ids[i], files_fn, value = TRUE, fixed = TRUE)
     data = readFile(files2read, time_format = time_format)
 
     # create vector with day indices -----
