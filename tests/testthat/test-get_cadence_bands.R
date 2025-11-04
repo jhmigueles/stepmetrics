@@ -3,6 +3,7 @@ test_that("calculation of cadence bands works", {
   # we use the testfile: fitbit -----
   paths = dir(system.file("extdata","testfiles_fitbit/", package = "stepmetrics"), full.names = TRUE)
   x = readFile(paths)
+  x = x$data
 
   # tests -----------
   bands_to_calculate = c(0, 1, 20, 40, 60, 80, 100, 120, Inf)

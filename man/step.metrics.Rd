@@ -7,7 +7,7 @@
 step.metrics(
   datadir,
   outputdir = "./",
-  idloc = "_",
+  idloc = NULL,
   cadence_bands = c(0, 1, 20, 40, 60, 80, 100, 120, Inf),
   cadence_peaks = c(1, 30, 60),
   cadence_MOD = 100,
@@ -30,8 +30,10 @@ starts with `"output_"`); the function will then look inside
 \item{outputdir}{Character. Directory where results should be stored.
 Subfolders will be created as needed (`daySummary/`).}
 
-\item{idloc}{Character (default = `"_"`). Delimiter used to extract
-participant IDs from filenames (ID is expected before this string).}
+\item{idloc}{Character (default = NULL). Delimiter used to extract
+participant IDs from filenames (ID is expected before this string).
+If working with GGIR output, `idloc` is ignored and the GGIR-identified
+ID is directly used to ensure matching.}
 
 \item{cadence_bands}{Numeric vector (default =
 `c(0, 1, 20, 40, 60, 80, 100, 120, Inf)`).

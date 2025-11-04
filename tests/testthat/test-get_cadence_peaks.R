@@ -3,6 +3,7 @@ test_that("calculation of cadence peaks works", {
   # we use the testfile: fitbit -----
   paths = dir(system.file("extdata", "testfiles_fitbit/", package = "stepmetrics"), full.names = TRUE)
   x = readFile(paths)
+  x = x$data
 
   # tests -----------
   peaks_to_calculate = c(1, 30, 60)
