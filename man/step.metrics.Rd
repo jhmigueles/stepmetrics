@@ -31,7 +31,9 @@ starts with `"output_"`); the function will then look inside
 Subfolders will be created as needed (`daySummary/`).}
 
 \item{idloc}{Character (default = NULL). Delimiter used to extract
-participant IDs from filenames (ID is expected before this string).}
+participant IDs from filenames (ID is expected before this string).
+If working with GGIR output, `idloc` is ignored and the GGIR-identified
+ID is directly used to ensure matching.}
 
 \item{cadence_bands}{Numeric vector (default =
 `c(0, 1, 20, 40, 60, 80, 100, 120, Inf)`).

@@ -2,6 +2,7 @@ test_that("reads and formats data correctly", {
   testthat::skip_if_not_installed("RSQLite")
 
   withr::local_locale(c(LC_TIME = "C", LC_COLLATE = "C"))
+  withr::local_timezone("UTC")
 
   # ISO-8601 checker
   is.ISO8601 <- function(x) {
@@ -36,6 +37,7 @@ test_that("reads and formats data correctly", {
             system.file("extdata/testfiles_fitbit/S001_d2_1min_epoch.csv", package = "stepmetrics"),
             system.file("extdata/testfiles_fitbit/S001_d3_1min_epoch.csv", package = "stepmetrics"))
   data1 = readFile(file1)
+  data1 = data1$data
 
   expect_equal(dim(data1), c(1440*3, 2))
   expect_equal(colnames(data1), c("timestamp", "steps"))
@@ -54,7 +56,8 @@ test_that("reads and formats data correctly", {
 
   # 30 sec epoch
   data3 = readFile(file3)
-
+  data3 = data3$data
+  
   expect_equal(dim(data3), c(4882, 2))
   expect_equal(colnames(data3), c("timestamp", "steps"))
   expect_true(is.ISO8601(data3$timestamp[1]))
@@ -68,7 +71,8 @@ test_that("reads and formats data correctly", {
 
   # with header / timestamp
   data4 = readFile(file4)
-
+  data4 = data4$data
+  
   expect_equal(dim(data4), dim(data3))
   expect_equal(data4[1, 1], data3[1, 1])
   expect_equal(data4[1, 2], data3[1, 2])
@@ -78,7 +82,8 @@ test_that("reads and formats data correctly", {
 
   # without header / timestamp
   data5 = readFile(file5)
-
+  data5 = data5$data
+  
   expect_equal(dim(data5), dim(data4))
   expect_equal(data5[1, 1], data4[1, 1])
   expect_equal(data5[1, 2], data4[1, 2])
@@ -87,7 +92,8 @@ test_that("reads and formats data correctly", {
 
   # semicolon separated csv
   data6 = readFile(file6)
-
+  data6 = data6$data
+  
   expect_equal(dim(data6), dim(data5))
   expect_equal(data6[1, 1], data5[1, 1])
   expect_equal(data6[1, 2], data5[1, 2])
@@ -96,7 +102,8 @@ test_that("reads and formats data correctly", {
 
   # one-row header and separated date-time
   data7 = readFile(file7)
-
+  data7 = data7$data
+  
   ts  <- parse_iso_utc(data7$timestamp[1])
   exp <- as.POSIXct("2021-07-03 13:48:00", tz = "UTC")
   expect_false(is.na(ts))
@@ -109,7 +116,8 @@ test_that("reads and formats data correctly", {
   file8 = system.file("extdata/testfiles_GGIR/output_test/meta/ms2.out/101_1.gt3x.RData",
                       package = "stepmetrics")
   data8 = readFile(file8)
-
+  data8 = data8$data
+  
   expect_equal(dim(data8), c(13635, 2))
   expect_true(grepl("19:00:00", data8[1, 1],))
   expect_equal(range(data8[, 2]), c(0, 121))

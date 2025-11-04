@@ -11,7 +11,7 @@ test_that("step.metrics produces output", {
   out1 <- mkdtemp()
   on.exit(unlink(out1, recursive = TRUE, force = TRUE), add = TRUE)
 
-  step.metrics(datadir = datadir1, outputdir = out1)
+  step.metrics(datadir = datadir1, outputdir = out1, idloc = "_")
 
   expect_true(dir.exists(out1))
   expect_true(dir.exists(file.path(out1, "daySummary")))
