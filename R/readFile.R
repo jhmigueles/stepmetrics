@@ -118,6 +118,7 @@ readFile = function(path, time_format = c(), tz = "") {
   # handle multiple files per participant
   AllFiles = path
   file = path[1]
+  id = NULL # if GGIR, this would be overrided with SUM$summary$ID
 
   # identify file extension
   format = tools::file_ext(file)
@@ -252,6 +253,7 @@ readFile = function(path, time_format = c(), tz = "") {
     IMP = c()
     load(file)
     data = IMP$metashort
+    id = unique(SUM$summary$ID)
   }
 
   # set up object to return ----
@@ -319,5 +321,6 @@ readFile = function(path, time_format = c(), tz = "") {
   if (epoch > 60) stop("This package cannot work with epoch lengths longer than 60 seconds for now.")
 
   # return
-  return(cleanData)
+  return(list(data = cleanData,
+              id = id))
 }

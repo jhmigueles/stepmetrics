@@ -1,7 +1,7 @@
 Package: stepmetrics
 Type: Package
 Title: Calculate Step and Cadence Metrics from Wearable Data
-Version: 1.1.0.9000
+Version: 1.1.0
 Authors@R: c(
     person("Jairo H", "Migueles", 
            email = "jairo@jhmigueles.com", 
@@ -24,7 +24,7 @@ Description: Provides functions to calculate step- and cadence-based metrics fro
 License: AGPL (>= 3)
 Depends: R (>= 3.5.0)
 Encoding: UTF-8
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 Imports: 
     PhysicalActivity,
     tools,

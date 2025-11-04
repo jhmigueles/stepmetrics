@@ -104,8 +104,10 @@ step.metrics = function(datadir, outputdir="./",
 
   # Get IDs -----
   ids = c()
-  if (is.null(idloc)) {
-    # Use the full file name as the ID
+  # identify ids as a way to detect if any recording is splitted in several files
+  if (is.null(idloc) || isGGIR) {
+    # Use the full file name as the ID if no idloc specified or if GGIR 
+    #   (ID will be derived from GGIR milestone file)
     ids = files
   } else {
     for (i in 1:length(files)) {
@@ -125,12 +127,13 @@ step.metrics = function(datadir, outputdir="./",
   }
 
   #Loop through the files
-  if (verbose == TRUE) cat("Processing participant: ")
   for (i in 1:length(ids)) {
-    if (verbose == TRUE) cat(paste0(ids[i], " "))
+    if (verbose == TRUE) cat(paste0("\rRecording ", i, "/", length(ids), ": ", ids[i]))
     # read data ----
     files2read = grep(ids[i], files_fn, value = TRUE, fixed = TRUE)
     data = readFile(files2read, time_format = time_format)
+    id_ggir = data$id
+    data = data$data
 
     # create vector with day indices -----
     day = define_day_indices(data$timestamp)
@@ -139,7 +142,11 @@ step.metrics = function(datadir, outputdir="./",
     for (di in 1:length(unique(day))) {
 
       # ID
-      id = ids[i]
+      if (isGGIR) {
+        id = id_ggir
+      } else {
+        id = ids[i]
+      }
 
       #Date
       if (di == 1) date = wday = wday_num = c()
@@ -270,9 +277,9 @@ step.metrics = function(datadir, outputdir="./",
   colnames(output) = names.out.2
 
   #Loop through files to calculate mean variables
-  if (verbose == TRUE) cat("Processing participant: ")
   for (i in 1:length(files)) {
-    if (verbose == TRUE) cat(gsub("_DaySum.csv", "", files[i]), " ")
+    if (verbose == TRUE) cat(paste0("\rID ", i, "/", length(files), ": ", 
+                                    gsub("_DaySum.csv", "", files[i])))
     D = read.csv(paste0(outputdir,"/daySummary/", files[i]))
     if (isGGIR == TRUE) {
       if (is.null(includeawakecrit)) {

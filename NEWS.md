@@ -1,7 +1,7 @@
 # stepmetrics 1.1.0
 
-- Features: Added support for idloc = NULL, i.e., the entire file basename  is used as ID.
-- Fix: Resolved file matching failure for GGIR output when IDs contain regex special characters (e.g., (, ), .)
+- Features: Added support for idloc = NULL, i.e., the entire file basename is used as ID.
+- Fix: Resolved file matching failure for GGIR output when IDs (now GGIR-identified ID is used)
 
 # stepmetrics 1.0.3
 
