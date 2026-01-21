@@ -1,85 +1,81 @@
-#' Calculate and export daily and person-level step and cadence metrics
+#' Calculate and export daily- and person-level step and cadence metrics
 #'
 #' @description
-#' This function processes epoch-level step count files (raw exports or
-#' GGIR output) and derives a comprehensive set of **daily** and
-#' **person-level** metrics. Metrics include total steps, cadence peaks,
-#' time and steps accumulated in predefined cadence bands, and time and steps
-#' in moderate, vigorous, and moderate-to-vigorous physical activity
-#' (MPA, VPA, MVPA).
+#' Processes epoch-level step count files (raw exports or GGIR output) to
+#' derive a comprehensive set of **daily** and **person-level** walking
+#' metrics. Computed outcomes include total daily steps, cadence peak
+#' indicators, time and steps accumulated within predefined cadence bands,
+#' and time and steps spent in moderate, vigorous, and
+#' moderate-to-vigorous physical activity (MPA, VPA, MVPA).
 #'
-#' The function writes two types of summary CSVs:
+#' Two types of summary CSV files are written:
 #' \itemize{
-#'   \item \strong{Day-level:} One file per participant per day, stored in
-#'         `outputdir/daySummary/`.
-#'   \item \strong{Person-level:} A single file with aggregated averages
-#'         across valid days per participant, stored as
-#'         `outputdir/personSummary.csv`.
+#'   \item \strong{Day-level:} One file per participant containing one row per
+#'   valid day, saved in `outputdir/daySummary/`.
+#'   \item \strong{Person-level:} A single file containing participant-level
+#'   averages across valid days, saved as `outputdir/personSummary.csv`.
 #' }
 #'
-#' @param datadir Character. Path to the directory containing the step data.
-#'   If processing GGIR output, provide the GGIR output folder (its name
-#'   starts with `"output_"`); the function will then look inside
-#'   `meta/ms2.out/`.
-#' @param outputdir Character. Directory where results should be stored.
-#'   Subfolders will be created as needed (`daySummary/`).
-#' @param idloc Character (default = NULL). Delimiter used to extract
-#'   participant IDs from filenames (ID is expected before this string).
-#'   If working with GGIR output, `idloc` is ignored and the GGIR-identified
-#'   ID is directly used to ensure matching. 
-#' @param cadence_bands Numeric vector (default =
-#'   `c(0, 1, 20, 40, 60, 80, 100, 120, Inf)`).
-#'   Breakpoints (in steps/min) used to compute time and steps per cadence band.
-#' @param cadence_peaks Numeric vector (default = `c(1, 30, 60)`).
-#'   Cadence peak values (e.g., peak 30 = mean of the top 30 cadence minutes).
-#' @param cadence_MOD Numeric (default = 100).
-#'   Threshold cadence (steps/min) for moderate physical activity.
-#' @param cadence_VIG Numeric (default = 130).
-#'   Threshold cadence (steps/min) for vigorous physical activity.
-#' @param includedaycrit Numeric (default = 10).
-#'   Minimum wear time in hours for a day to be considered valid.
-#' @param includeawakecrit Numeric (default = NULL).
-#'   If GGIR part 5 outputs are available, use the proportion of awake time
-#'   instead of wear time to define valid days.
-#' @param includedaylengthcrit Numeric (default = 23).
-#'   Minimum day length (hours) for a day to be valid (only relevant if using
-#'   GGIR part 5 outputs).
-#' @param exclude_pk30_0 Logical (default = TRUE).
-#' @param exclude_pk60_0 Logical (default = TRUE).
-#'   Exclude days with zero values in the 60-minute cadence peak.
-#' @param time_format Character (default = NULL).
-#'   Time format used when reading non-GGIR step files.
-#' @param verbose Logical (default = TRUE).
-#'   Whether to print progress messages.
+#' @param datadir Character. Path to the directory containing step data files.
+#'   When processing GGIR output, provide the GGIR output directory (name
+#'   starting with `"output_"`); files will be read from `meta/ms2.out/`.
+#' @param outputdir Character. Directory where results will be written.
+#'   Subdirectories are created as needed.
+#' @param idloc Character, default = NULL. Delimiter used to extract
+#'   participant IDs from filenames (ID is assumed to precede this string).
+#'   Ignored when processing GGIR output, where IDs are taken directly from
+#'   GGIR metadata.
+#' @param cadence_bands Numeric vector. Breakpoints (steps/min) used to define
+#'   cadence bands for summarizing time and steps.
+#' @param cadence_peaks Numeric vector. Window sizes (in minutes) used to
+#'   compute cadence peak metrics (e.g., peak 30 = mean of the top 30 cadence
+#'   minutes).
+#' @param cadence_MOD Numeric. Cadence threshold (steps/min) defining moderate
+#'   physical activity.
+#' @param cadence_VIG Numeric. Cadence threshold (steps/min) defining vigorous
+#'   physical activity.
+#' @param includedaycrit Numeric. Minimum required daily wear or recording
+#'   duration (hours) for a day to be considered valid.
+#' @param includeawakecrit Numeric, default = NULL. When GGIR part 5 output is
+#'   available, specifies the minimum proportion of awake time required for a
+#'   valid day.
+#' @param includedaylengthcrit Numeric. Minimum total day length (hours) for a
+#'   valid day when using GGIR part 5 outputs.
+#' @param exclude_pk30_0 Logical. If TRUE, excludes days with zero-valued
+#'   30-minute cadence peak metrics.
+#' @param exclude_pk60_0 Logical. If TRUE, excludes days with zero-valued
+#'   60-minute cadence peak metrics.
+#' @param time_format Character, default = NULL. Time format used when reading
+#'   non-GGIR step files.
+#' @param verbose Logical. If TRUE, prints progress messages during processing.
 #'
 #' @details
-#' For each participant and day, the function computes:
+#' For each participant-day combination, the following metrics are computed:
 #' \itemize{
 #'   \item Total steps per day
-#'   \item Cadence peak metrics (e.g., peak 1, 30, 60 minutes)
-#'   \item Minutes and steps in each cadence band
-#'   \item Minutes in MPA, VPA, and MVPA
-#'   \item Steps accumulated in MPA, VPA, and MVPA
-#'   \item Recording duration, valid wear time, and awake time (if GGIR available)
+#'   \item Cadence peak values (e.g., 1-, 30-, and 60-minute peaks)
+#'   \item Minutes and steps accumulated in each cadence band
+#'   \item Minutes and steps accumulated in MPA, VPA, and MVPA
+#'   \item Recording duration, wear time, and proportion of awake time
+#'   (when GGIR data are available)
 #' }
 #'
-#' Person-level outputs include plain, weighted (weekday/weekend), and
-#' stratified (weekday/weekend separately) averages of all variables.
+#' Person-level summaries include plain averages, weekday/weekend–weighted
+#' averages, and averages stratified by weekdays and weekend days.
 #'
 #' @return
-#' This function does not return an object. It writes:
+#' No value is returned. The function writes:
 #' \itemize{
-#'   \item \code{<ID>_DaySum.csv} in `outputdir/daySummary/` with daily metrics.
-#'   \item \code{personSummary.csv} in `outputdir/` with person-level averages.
+#'   \item `<ID>_DaySum.csv` files to `outputdir/daySummary/`
+#'   \item `personSummary.csv` to `outputdir/`
 #' }
 #'
 #' @examples
 #' \donttest{
-#  # define data directory
-#' datadir = system.file("extdata", "testfiles_fitbit", package = "stepmetrics")
-#  # run step.metrics
+#' datadir <- system.file("extdata", "testfiles_fitbit", package = "stepmetrics")
 #' step.metrics(datadir = datadir, outputdir = tempdir())
 #' }
+#'
 #' @importFrom utils write.csv
 #' @export
 step.metrics = function(datadir, outputdir="./",
@@ -169,18 +165,22 @@ step.metrics = function(datadir, outputdir="./",
           SUM = NULL
           load(files2read)
           p2 = SUM$daysummary
-          if (dir.exists(gsub("ms2.out", "ms5.out", files2read))) {
+          if (file.exists(gsub("ms2.out", "ms5.out", files2read))) {
             output = NULL
-            load(dir.exists(gsub("ms2.out", "ms5.out", files2read)))
+            load(gsub("ms2.out", "ms5.out", files2read))
             p5 = output
           }
         }
-        GGIRrow = which(p2$ID == id & substr(p2$calendar_date, 1, 10) == date[di])
-        nValidHoursCol = grep("valid.hours|valid hours", colnames(p2), value = T)
-        wear.min[di] = as.numeric(p2[GGIRrow, nValidHoursCol])*60
-        GGIRrow = which(p5$ID == id & substr(p5$calendar_date, 1, 10) == date[di])
-        if (length(GGIRrow) > 0) {
-          wear.awake.perc[di] = (100 - as.numeric(p5[GGIRrow, "nonwear_perc_day"])) / 100
+        if (!is.null(p2)) {
+          GGIRrow = which(p2$ID == id & substr(p2$calendar_date, 1, 10) == date[di])
+          nValidHoursCol = grep("valid.hours|valid hours", colnames(p2), value = T)
+          wear.min[di] = as.numeric(p2[GGIRrow, nValidHoursCol])*60
+        }
+        if (!is.null(p5)) {
+          GGIRrow = which(p5$ID == id & substr(p5$calendar_date, 1, 10) == date[di])
+          if (length(GGIRrow) > 0) {
+            wear.awake.perc[di] = (100 - as.numeric(p5[GGIRrow, "nonwear_perc_day"])) / 100
+          }
         }
       }
       #Steps/day
@@ -285,30 +285,34 @@ step.metrics = function(datadir, outputdir="./",
     D = read.csv(paste0(outputdir,"/daySummary/", files[i]))
     if (isGGIR == TRUE) {
       if (is.null(includeawakecrit)) {
-        exclude = sum(D$dur_wear_min < includedaycrit * 60)
-        if (exclude > 0) D = D[-which(D$dur_wear_min < includedaycrit * 60),]
+        exclude = sum(D$dur_wear_min < includedaycrit * 60, na.rm = TRUE)
+        if (exclude > 0) D = D[!(D$dur_wear_min < includedaycrit * 60),]
       } else {
-        exclude = sum(D$dur_awake_perc < includeawakecrit, na.rm = TRUE) + sum(is.na(D$dur_awake_perc)) + sum(D$dur_day_min < includedaylengthcrit*60)
-        if (exclude > 0) D = D[-which(D$dur_awake_perc < includeawakecrit | is.na(D$dur_awake_perc) | D$dur_day_min < includedaylengthcrit*60),]
+        exclude = sum(D$dur_awake_perc < includeawakecrit, na.rm = TRUE) + sum(is.na(D$dur_awake_perc)) + sum(D$dur_day_min < includedaylengthcrit*60, na.rm = TRUE)
+        if (exclude > 0) D = D[!(D$dur_awake_perc < includeawakecrit | is.na(D$dur_awake_perc) | D$dur_day_min < includedaylengthcrit*60),]
       }
     } else {
-      exclude = sum(D$dur_day_min < includedaycrit * 60)
-      if (exclude > 0) D = D[-which(D$dur_day_min < includedaycrit * 60),]
+      exclude = sum(D$dur_day_min < includedaycrit * 60, na.rm = TRUE)
+      if (exclude > 0) D = D[!(D$dur_day_min < includedaycrit * 60),]
     }
     if (exclude_pk30_0 == TRUE) {
-      zeroes = sum(D$CAD_nZeroes_pk30 > 0)
-      if (zeroes > 0) D = D[-which(D$CAD_nZeroes_pk30 > 0),]
+      zeroes = sum(D$CAD_nZeroes_pk30 > 0, na.rm = TRUE)
+      if (zeroes > 0) D = D[!(D$CAD_nZeroes_pk30 > 0),]
     }
     if (exclude_pk60_0 == TRUE) {
-      zeroes = sum(D$CAD_nZeroes_pk60 > 0)
-      if (zeroes > 0) D = D[-which(D$CAD_nZeroes_pk60 > 0),]
+      zeroes = sum(D$CAD_nZeroes_pk60 > 0, na.rm = TRUE)
+      if (zeroes > 0) D = D[!(D$CAD_nZeroes_pk60 > 0),]
     }
+    # after cleaning, it might be that all days are considered not valid
+    # in such case, do not continue
+    if (nrow(D) == 0) next
+    # otherwise, rest of the pipeline
     fi = 1                                                  #fi is the column of the new output data frame
     output[i,fi] = D[1, 1]; fi = fi + 1
     output[i,fi] = D[1,"date"]; fi = fi + 1
     output[i,fi] = nrow(D); fi = fi + 1
-    output[i,fi] = sum(D$weekday_num < 6); fi = fi + 1
-    output[i,fi] = sum(D$weekday_num >= 6); fi = fi + 1
+    output[i,fi] = sum(D$weekday_num < 6, na.rm = TRUE); fi = fi + 1
+    output[i,fi] = sum(D$weekday_num >= 6, na.rm = TRUE); fi = fi + 1
     output[i,fi:(fi + 1)] = c(cadence_MOD, cadence_VIG); fi = fi + 2
 
     # averages
@@ -316,25 +320,28 @@ step.metrics = function(datadir, outputdir="./",
       columns = grep(colnames(D)[mi], colnames(output), value = TRUE)
       # plain
       fi = grep("_pla", columns, value = TRUE)
-      output[i,fi] = mean(D[,mi])
+      output[i,fi] = mean(D[,mi], na.rm = TRUE)
       # weighted
       fi = grep("_wei", columns, value = TRUE)
-      output[i,fi] = ((mean(D[which(D$weekday_num < 6), mi]) * 5) + (mean(D[which(D$weekday_num >= 6), mi]) * 2)) / 7
+      output[i,fi] = ((mean(D[which(D$weekday_num < 6), mi], na.rm = TRUE) * 5) + 
+                        (mean(D[which(D$weekday_num >= 6), mi], na.rm = TRUE) * 2)) / 7
       # weekdays
       fi = grep("_WD", columns, value = TRUE)
-      output[i,fi] = mean(D[which(D$weekday_num < 6), mi])
+      output[i,fi] = mean(D[which(D$weekday_num < 6), mi], na.rm = TRUE)
       # weekend days
       fi = grep("_WE", columns, value = TRUE)
-      output[i,fi] = mean(D[which(D$weekday_num >= 6), mi])
+      output[i,fi] = mean(D[which(D$weekday_num >= 6), mi], na.rm = TRUE)
     }
   }
-
+  
+  # save output
   if (verbose == TRUE) {
     cat('\n')
     cat(paste0(rep('_', options()$width), collapse = ''))
     cat("\nStoring output...\n")
   }
-
+  
+  output = output[!is.na(output$ID), ]
   utils::write.csv(output, file = paste0(outputdir,"/personSummary.csv"), row.names = FALSE)
 
   if (verbose == TRUE) {
