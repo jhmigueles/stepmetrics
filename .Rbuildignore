@@ -6,3 +6,4 @@
 ^logo_hd\.png$
 ^cran-comments\.md$
 ^CRAN-SUBMISSION$
+^local_data$

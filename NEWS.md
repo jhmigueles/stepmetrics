@@ -1,3 +1,29 @@
+# stepmetrics (development version, to become 2.0.0)
+
+Infrastructure to turn stepmetrics into a repository of step-detection
+algorithms (branch `issue33_step_detection`). No algorithm is included yet;
+each one will come in its own branch.
+
+- `read_raw()` and `raw_header()`: read a whole raw file of the formats GGIR
+  reads into one common format, with the gyroscope when recorded and a
+  timestamp per sample: Axivity .cwa and .csv, GENEActiv .bin and Parmay
+  Matrix .bin (through 'GGIRread'), ActiGraph .gt3x (through 'read.gt3x') and
+  ActiLife .csv, and Movisens .bin (through 'unisensR'). Files are always read
+  whole, which suits laboratory protocols of a few hours; recordings of
+  several days are processed in GGIR with `myfun_steps()`.
+- `as_raw()`: wrap a data.frame of raw samples in the same format.
+- `register_step_method()`, `step_methods()`: registry of step-detection
+  methods with their metadata (channels, sampling rate, locations, licence,
+  citation) and a common contract for their core function.
+- `detect_steps()`: one row per step with its exact time, side and type.
+- `myfun_steps()`: run an acceleration-only method inside GGIR as `myfun`.
+- `steps_to_epochs()`: steps per epoch in the format of `readFile()`, to use
+  `step.metrics()` with any algorithm.
+- `benchmark_steps()`: one-to-one matching against a reference (e.g. video),
+  with sensitivity, precision, F1 and count error, overall or per segment.
+- 'GGIRread' and 'data.table' added to Imports; 'read.gt3x' and 'unisensR' in
+  Suggests (needed only for those formats); 'GGIR' in Suggests (for tests).
+
 # stepmetrics 1.1.0
 
 - Features: Added support for idloc = NULL, i.e., the entire file basename is used as ID.

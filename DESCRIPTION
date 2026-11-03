@@ -1,7 +1,7 @@
 Package: stepmetrics
 Type: Package
-Title: Calculate Step and Cadence Metrics from Wearable Data
-Version: 1.1.0
+Title: Step Detection Algorithms and Step and Cadence Metrics for Wearable Data
+Version: 1.1.0.9000
 Authors@R: c(
     person("Jairo H", "Migueles", 
            email = "jairo@jhmigueles.com", 
@@ -9,28 +9,40 @@ Authors@R: c(
     person("Elroy J", "Aguiar", role = "fnd", 
            comment = "Funding and data support"),
     person("University of Alabama", "", role = "fnd"))
-Description: Provides functions to calculate step- and cadence-based metrics from 
-    timestamped accelerometer and wearable device data. Supports CSV and AGD files from 
-    'ActiGraph' devices, CSV files from 'Fitbit' devices, and step counts derived   
-    with R package 'GGIR' <https://github.com/wadpac/GGIR>, with automatic handling 
-    of epoch lengths from 1 to 60 seconds. Metrics include total steps, cadence 
-    peaks, minutes and steps in predefined cadence bands, and time and steps in 
-    moderate-to-vigorous physical activity (MVPA). Methods and thresholds are 
-    informed by the literature, e.g., 
-    Tudor-Locke and Rowe (2012) <doi:10.2165/11599170-000000000-00000>, 
-    Barreira et al. (2012) <doi:10.1249/MSS.0b013e318254f2a3>, 
-    and Tudor-Locke et al. (2018) <doi:10.1136/bjsports-2017-097628>. 
+Description: Open-source implementations of step-detection algorithms for raw
+    accelerometer and gyroscope data, and functions to calculate step- and
+    cadence-based metrics from them or from step counts of other devices.
+    Raw files from 'Axivity', 'GENEActiv', 'Parmay Matrix', 'ActiGraph' and
+    'Movisens' devices are read whole in a common format that keeps the
+    gyroscope and the time of every sample, which suits laboratory
+    protocols. Every algorithm returns the time of each step, can run on
+    multi-day recordings inside R package 'GGIR'
+    <https://github.com/wadpac/GGIR> as an external function, and can be
+    validated against a reference with the same matching criterion. Step
+    counts per epoch from 'ActiGraph' (CSV and AGD), 'Fitbit' (CSV) and 'GGIR'
+    output are also supported, with automatic handling of epoch lengths from
+    1 to 60 seconds. Metrics include total steps, cadence peaks, minutes and
+    steps in predefined cadence bands, and time and steps in
+    moderate-to-vigorous physical activity (MVPA). Methods and thresholds are
+    informed by the literature, e.g.,
+    Tudor-Locke and Rowe (2012) <doi:10.2165/11599170-000000000-00000>,
+    Barreira et al. (2012) <doi:10.1249/MSS.0b013e318254f2a3>,
+    and Tudor-Locke et al. (2018) <doi:10.1136/bjsports-2017-097628>.
     The package record is also available on Zenodo (2023) <doi:10.5281/zenodo.7858094>.
 License: AGPL (>= 3)
 Depends: R (>= 3.5.0)
 Encoding: UTF-8
-RoxygenNote: 7.3.3
 Imports: 
+    data.table,
+    GGIRread (>= 1.0.0),
     PhysicalActivity,
     tools,
     stats,
     utils
 Suggests: 
+    GGIR,
+    read.gt3x,
+    unisensR,
     testthat (>= 3.0.0),
     RSQLite,
     spelling,
@@ -39,3 +51,4 @@ Config/testthat/edition: 3
 URL: https://github.com/jhmigueles/stepmetrics
 BugReports: https://github.com/jhmigueles/stepmetrics/issues
 Language: en-US
+Config/roxygen2/version: 8.0.0
